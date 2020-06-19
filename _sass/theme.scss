@@ -3,7 +3,7 @@
 @import 'begin';
 @import 'syntax';
 
-$linkColor: #268bd2;
+$linkColor: #999;
 $mobileW: 768px;
 $smallMobileW: 480px;
 $bigScreenW: 1600px;
@@ -110,7 +110,7 @@ header {
 	}
 
 	@media screen and  (max-width: $mobileWidth) {
-		margin:0 15px;
+		margin:0 15px; 
 		div.highlighter-rouge {
 			right: 15px;
 		}
@@ -120,7 +120,7 @@ header {
 	}
 
 	@media screen and (max-width: $tabWidth) and (min-width: $mobileWidth){
-		margin:0 40px;
+		margin:0 40px;	
 		div.highlighter-rouge {
 			right: 40px;
 		}
