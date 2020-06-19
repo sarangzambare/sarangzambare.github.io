@@ -19,7 +19,7 @@ All code can be found at this [repository][main_code]
 
 First things first - what am I trying here ? - basically I am trying to build a frequency detector on a quantum computer, audio file goes in and most dominant frequencies come out, thats it. (some might ask - aren't you making a glorified version of a quantum version of discrete fourier transform ? -> well yeh but sshhh!). I plan to start with simple audio signal of a pure sine wave. If things work out I may try to record a note played on a guitar.
 
-### TLDR; - I want to make a frequency detector using a quantum computer
+TLDR; - I want to make a frequency detector using a quantum computer
 
 
 ## Why should I care ?
