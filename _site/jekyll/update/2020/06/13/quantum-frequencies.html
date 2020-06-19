@@ -5,40 +5,42 @@
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
 <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,400i,700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/css/style.css">
-<title>Quantum Computing</title>
+<title>Quantum Computing to find frequencies in an audio file</title>
 <!-- Begin Jekyll SEO tag v2.6.1 -->
-<title>Quantum Computing | Your awesome title</title>
+<title>Quantum Computing to find frequencies in an audio file | Your awesome title</title>
 <meta name="generator" content="Jekyll v3.8.7" />
-<meta property="og:title" content="Quantum Computing" />
+<meta property="og:title" content="Quantum Computing to find frequencies in an audio file" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Read this: article by BCG talking about the economic impact of quantum computing in the NISQ era and beyond - which estimates the economic impact of quantum computing in the next 5 years to be in billions of dollars." />
-<meta property="og:description" content="Read this: article by BCG talking about the economic impact of quantum computing in the NISQ era and beyond - which estimates the economic impact of quantum computing in the next 5 years to be in billions of dollars." />
+<meta name="description" content="Because why not" />
+<meta property="og:description" content="Because why not" />
 <link rel="canonical" href="http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies.html" />
 <meta property="og:url" content="http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies.html" />
 <meta property="og:site_name" content="Your awesome title" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-06-13T15:15:52-04:00" />
 <script type="application/ld+json">
-{"headline":"Quantum Computing","dateModified":"2020-06-13T15:15:52-04:00","datePublished":"2020-06-13T15:15:52-04:00","url":"http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies.html","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies.html"},"description":"Read this: article by BCG talking about the economic impact of quantum computing in the NISQ era and beyond - which estimates the economic impact of quantum computing in the next 5 years to be in billions of dollars.","@type":"BlogPosting","@context":"https://schema.org"}</script>
+{"headline":"Quantum Computing to find frequencies in an audio file","dateModified":"2020-06-13T15:15:52-04:00","datePublished":"2020-06-13T15:15:52-04:00","url":"http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies.html","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies.html"},"description":"Because why not","@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 </head>
 <body>
   <header class="texture-black">
     <div class="container"></div><div class="container">
-	<h1>Quantum Computing</h1>
-	<h4 class="post-description"></h4>
+	<img src="/assets/rsz_science_bitch.png" style="float: left;" />
+	<h1>Quantum Computing to find frequencies in an audio file</h1>
+
+	<h4 class="post-description">Because why not</h4>
 	<div class="post-date" style="margin-top:20px">
 		Published on Jun 13, 2020
 	</div>
-	<ul class="post-tags"><li>jekyll</li><li>update</li></ul>
+	<!-- <ul class="post-tags"><li>jekyll</li><li>update</li></ul> -->
 </div>
 </header>
   <main>
     <div class="container">
       <div class="post-container">
-          <p>Read this: <a href="https://www.bcg.com/publications/2019/quantum-computers-create-value-when.aspx">article</a> by BCG talking about the economic impact of quantum computing in the <a href="https://arxiv.org/abs/1801.00862">NISQ era</a> and beyond - which estimates the economic impact of quantum computing in the next 5 years to be in billions of dollars.</p>
+          <p>Do read this: <a href="https://www.bcg.com/publications/2019/quantum-computers-create-value-when.aspx">article</a> by BCG predicting the economic impact of quantum computing in the <a href="https://arxiv.org/abs/1801.00862">NISQ era</a> and beyond - which estimates the economic impact of quantum computing in the next 5 years to be $2 - 5 billion.</p>
 
-<p>I decided to make a tangible application on a quantum computer - however simple it maybe.</p>
+<p>My inner quantum physicist sprung into action and I decided to make a tangible application on a quantum computer - however simple it maybe.</p>
 
 <p>All code can be found at this <a href="https://github.com/sarangzambare/quantum_frequency_detector">repository</a></p>
 
@@ -82,9 +84,9 @@
 
 <h3 id="11-building-the-quantum-circuit-for-qft">1.1 Building the quantum circuit for QFT</h3>
 
-<figure align="center" class="image">
-  <img src="/assets/qft_circuit.png" alt="" width="1000" height="250" />
-  <figcaption align="center" style="font-size:20px"></figcaption>
+<figure class="image">
+  <img src="/assets/qft_circuit.png" alt="" />
+  <figcaption></figcaption>
 </figure>
 
 <p>* <a href="https://algassert.com/quirk">Quirk visualizer by Craig Gidney</a></p>
@@ -178,9 +180,9 @@
 
 <p>Using these two gates, and the equation derived for QFT, we can construct the full circuit to get us the desired superposition like so</p>
 
-<figure align="center" class="image">
-  <img src="/assets/qft_full.png" alt="" width="900" height="250" />
-  <figcaption align="center" style="font-size:20px"></figcaption>
+<figure class="image">
+  <img src="/assets/qft_full.png" alt="" />
+  <figcaption></figcaption>
 </figure>
 
 <p>* Wikipedia</p>
@@ -215,18 +217,18 @@ def qft(circuit, n):
 
 <p>An audio file is simply a bunch of samples sampled at a specific sampling rate. Usually this rate is 44100Hz for CD quality audio. This means that the analog waveform is measured at 44100 equally spaced points within a second.</p>
 
-<figure align="center" class="image">
-  <img src="/assets/900_wave.png" alt="900Hz sine wave" width="" height="" />
-  <figcaption align="center" style="font-size:20px">900Hz sine wave</figcaption>
+<figure class="image">
+  <img src="/assets/900_wave.png" alt="900Hz sine wave" />
+  <figcaption>900Hz sine wave</figcaption>
 </figure>
 
 <!-- ![900Hz sine wave audio samples](/assets/900_wave.png) -->
 
 <p>If we want to use QFT on such a wave we need to encode the value of each sample into the amplitudes of the basis states of our system. Consider this 3-qubit example:</p>
 
-<figure align="center" class="image">
-  <img src="/assets/900_wave_c.jpg" alt="3-qubit samples" width="" height="" />
-  <figcaption align="center" style="font-size:20px">3-qubit samples</figcaption>
+<figure class="image">
+  <img src="/assets/900_wave_c.jpg" alt="3-qubit samples" />
+  <figcaption>3-qubit samples</figcaption>
 </figure>
 
 <script type="math/tex; mode=display">\large |\psi_{audio}\rangle = c_{0}|000\rangle + c_{1}|001\rangle + c_{2}|010\rangle + c_{3}|011\rangle + c_{4}|100\rangle + c_{5}|101\rangle + c_{6}|110\rangle + c_{7}|111\rangle</script>
@@ -386,9 +388,9 @@ has the same Schmidt decomposition coefficients as the target</p>
 <span class="c1"># prepare circuit</span>
 <span class="n">qcs</span> <span class="o">=</span> <span class="n">prepare_circuit_from_samples</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">n_qubits</span><span class="p">)</span></code></pre></figure>
 
-<figure align="center" class="image">
-  <img src="/assets/900_wave.png" alt="" width="" height="" />
-  <figcaption align="center" style="font-size:20px"></figcaption>
+<figure class="image">
+  <img src="/assets/900_wave.png" alt="" />
+  <figcaption></figcaption>
 </figure>
 
 <h3 id="step-2---apply-qft-and-get-amplitudes-in-the-fourier-space">Step 2 - Apply QFT and get amplitudes in the fourier space</h3>
@@ -527,14 +529,14 @@ freqs = top_indices*frame_rate/n</span><span class="n">_samples</span>
 
 <p>The circuit as visualized on IBM Q portal:</p>
 
-<figure align="center" class="image">
-  <img src="/assets/circuit_4_1.png" alt="" width="900" height="300" />
-  <figcaption align="center" style="font-size:20px"></figcaption>
+<figure class="image">
+  <img src="/assets/circuit_4_1.png" alt="" />
+  <figcaption></figcaption>
 </figure>
 
-<figure align="center" class="image">
-  <img src="/assets/circuit_4_2.png" alt="" width="900" height="300" />
-  <figcaption align="center" style="font-size:20px"></figcaption>
+<figure class="image">
+  <img src="/assets/circuit_4_2.png" alt="" />
+  <figcaption></figcaption>
 </figure>
 
 <p>After running on a simulator, the results look like :</p>
@@ -560,9 +562,9 @@ freqs = top_indices*frame_rate/n</span><span class="n">_samples</span>
 
 <p>The circuit as visualized on IBM Q portal:</p>
 
-<figure align="center" class="image">
-  <img src="/assets/circuit_3.png" alt="" width="900" height="300" />
-  <figcaption align="center" style="font-size:20px"></figcaption>
+<figure class="image">
+  <img src="/assets/circuit_3.png" alt="" />
+  <figcaption></figcaption>
 </figure>
 
 <p>After running on a simulator, the results look like :</p>
@@ -647,5 +649,5 @@ freqs = top_indices*frame_rate/n</span><span class="n">_samples</span>
 
         <!-- Configure Disqus --></div>
     <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-    
   </main></body>
+</html>

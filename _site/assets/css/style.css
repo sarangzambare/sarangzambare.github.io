@@ -339,8 +339,8 @@ body { font-family: 'Nunito Sans', sans-serif; font-size: 16px; line-height: 1.5
 @media screen and (min-width: 320px) { body { font-size: calc(16px + 3 * ((100vw - 320px) / 960)); } }
 @media screen and (min-width: 1280px) { body { font-size: 19px; } }
 
-a { color: #268bd2; text-decoration: none; transition: border-bottom 0.4s; }
-a:hover { border-bottom: 0.5px solid #268bd2; }
+a { color: #999; text-decoration: none; transition: border-bottom 0.4s; }
+a:hover { border-bottom: 0.5px solid #999; }
 
 h1, h2, h3 { line-height: 1.2em; }
 

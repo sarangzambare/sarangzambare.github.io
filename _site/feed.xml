@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.7">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-06-19T14:59:19-04:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Your awesome title</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Quantum Computing</title><link href="http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies.html" rel="alternate" type="text/html" title="Quantum Computing" /><published>2020-06-13T15:15:52-04:00</published><updated>2020-06-13T15:15:52-04:00</updated><id>http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies</id><content type="html" xml:base="http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies.html">&lt;p&gt;Read this: &lt;a href=&quot;https://www.bcg.com/publications/2019/quantum-computers-create-value-when.aspx&quot;&gt;article&lt;/a&gt; by BCG talking about the economic impact of quantum computing in the &lt;a href=&quot;https://arxiv.org/abs/1801.00862&quot;&gt;NISQ era&lt;/a&gt; and beyond - which estimates the economic impact of quantum computing in the next 5 years to be in billions of dollars.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.8.7">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-06-19T17:03:50-04:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Your awesome title</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Quantum Computing to find frequencies in an audio file</title><link href="http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies.html" rel="alternate" type="text/html" title="Quantum Computing to find frequencies in an audio file" /><published>2020-06-13T15:15:52-04:00</published><updated>2020-06-13T15:15:52-04:00</updated><id>http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies</id><content type="html" xml:base="http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies.html">&lt;p&gt;Do read this: &lt;a href=&quot;https://www.bcg.com/publications/2019/quantum-computers-create-value-when.aspx&quot;&gt;article&lt;/a&gt; by BCG predicting the economic impact of quantum computing in the &lt;a href=&quot;https://arxiv.org/abs/1801.00862&quot;&gt;NISQ era&lt;/a&gt; and beyond - which estimates the economic impact of quantum computing in the next 5 years to be $2 - 5 billion.&lt;/p&gt;
 
-&lt;p&gt;I decided to make a tangible application on a quantum computer - however simple it maybe.&lt;/p&gt;
+&lt;p&gt;My inner quantum physicist sprung into action and I decided to make a tangible application on a quantum computer - however simple it maybe.&lt;/p&gt;
 
 &lt;p&gt;All code can be found at this &lt;a href=&quot;https://github.com/sarangzambare/quantum_frequency_detector&quot;&gt;repository&lt;/a&gt;&lt;/p&gt;
 
@@ -44,9 +44,9 @@
 
 &lt;h3 id=&quot;11-building-the-quantum-circuit-for-qft&quot;&gt;1.1 Building the quantum circuit for QFT&lt;/h3&gt;
 
-&lt;figure align=&quot;center&quot; class=&quot;image&quot;&gt;
-  &lt;img src=&quot;/assets/qft_circuit.png&quot; alt=&quot;&quot; width=&quot;1000&quot; height=&quot;250&quot; /&gt;
-  &lt;figcaption align=&quot;center&quot; style=&quot;font-size:20px&quot;&gt;&lt;/figcaption&gt;
+&lt;figure class=&quot;image&quot;&gt;
+  &lt;img src=&quot;/assets/qft_circuit.png&quot; alt=&quot;&quot; /&gt;
+  &lt;figcaption&gt;&lt;/figcaption&gt;
 &lt;/figure&gt;
 
 &lt;p&gt;* &lt;a href=&quot;https://algassert.com/quirk&quot;&gt;Quirk visualizer by Craig Gidney&lt;/a&gt;&lt;/p&gt;
@@ -140,9 +140,9 @@
 
 &lt;p&gt;Using these two gates, and the equation derived for QFT, we can construct the full circuit to get us the desired superposition like so&lt;/p&gt;
 
-&lt;figure align=&quot;center&quot; class=&quot;image&quot;&gt;
-  &lt;img src=&quot;/assets/qft_full.png&quot; alt=&quot;&quot; width=&quot;900&quot; height=&quot;250&quot; /&gt;
-  &lt;figcaption align=&quot;center&quot; style=&quot;font-size:20px&quot;&gt;&lt;/figcaption&gt;
+&lt;figure class=&quot;image&quot;&gt;
+  &lt;img src=&quot;/assets/qft_full.png&quot; alt=&quot;&quot; /&gt;
+  &lt;figcaption&gt;&lt;/figcaption&gt;
 &lt;/figure&gt;
 
 &lt;p&gt;* Wikipedia&lt;/p&gt;
@@ -177,18 +177,18 @@ def qft(circuit, n):
 
 &lt;p&gt;An audio file is simply a bunch of samples sampled at a specific sampling rate. Usually this rate is 44100Hz for CD quality audio. This means that the analog waveform is measured at 44100 equally spaced points within a second.&lt;/p&gt;
 
-&lt;figure align=&quot;center&quot; class=&quot;image&quot;&gt;
-  &lt;img src=&quot;/assets/900_wave.png&quot; alt=&quot;900Hz sine wave&quot; width=&quot;&quot; height=&quot;&quot; /&gt;
-  &lt;figcaption align=&quot;center&quot; style=&quot;font-size:20px&quot;&gt;900Hz sine wave&lt;/figcaption&gt;
+&lt;figure class=&quot;image&quot;&gt;
+  &lt;img src=&quot;/assets/900_wave.png&quot; alt=&quot;900Hz sine wave&quot; /&gt;
+  &lt;figcaption&gt;900Hz sine wave&lt;/figcaption&gt;
 &lt;/figure&gt;
 
 &lt;!-- ![900Hz sine wave audio samples](/assets/900_wave.png) --&gt;
 
 &lt;p&gt;If we want to use QFT on such a wave we need to encode the value of each sample into the amplitudes of the basis states of our system. Consider this 3-qubit example:&lt;/p&gt;
 
-&lt;figure align=&quot;center&quot; class=&quot;image&quot;&gt;
-  &lt;img src=&quot;/assets/900_wave_c.jpg&quot; alt=&quot;3-qubit samples&quot; width=&quot;&quot; height=&quot;&quot; /&gt;
-  &lt;figcaption align=&quot;center&quot; style=&quot;font-size:20px&quot;&gt;3-qubit samples&lt;/figcaption&gt;
+&lt;figure class=&quot;image&quot;&gt;
+  &lt;img src=&quot;/assets/900_wave_c.jpg&quot; alt=&quot;3-qubit samples&quot; /&gt;
+  &lt;figcaption&gt;3-qubit samples&lt;/figcaption&gt;
 &lt;/figure&gt;
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;\large |\psi_{audio}\rangle = c_{0}|000\rangle + c_{1}|001\rangle + c_{2}|010\rangle + c_{3}|011\rangle + c_{4}|100\rangle + c_{5}|101\rangle + c_{6}|110\rangle + c_{7}|111\rangle&lt;/script&gt;
@@ -348,9 +348,9 @@ has the same Schmidt decomposition coefficients as the target&lt;/p&gt;
 &lt;span class=&quot;c1&quot;&gt;# prepare circuit&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;qcs&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;prepare_circuit_from_samples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;samples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n_qubits&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
 
-&lt;figure align=&quot;center&quot; class=&quot;image&quot;&gt;
-  &lt;img src=&quot;/assets/900_wave.png&quot; alt=&quot;&quot; width=&quot;&quot; height=&quot;&quot; /&gt;
-  &lt;figcaption align=&quot;center&quot; style=&quot;font-size:20px&quot;&gt;&lt;/figcaption&gt;
+&lt;figure class=&quot;image&quot;&gt;
+  &lt;img src=&quot;/assets/900_wave.png&quot; alt=&quot;&quot; /&gt;
+  &lt;figcaption&gt;&lt;/figcaption&gt;
 &lt;/figure&gt;
 
 &lt;h3 id=&quot;step-2---apply-qft-and-get-amplitudes-in-the-fourier-space&quot;&gt;Step 2 - Apply QFT and get amplitudes in the fourier space&lt;/h3&gt;
@@ -489,14 +489,14 @@ freqs = top_indices*frame_rate/n&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_sa
 
 &lt;p&gt;The circuit as visualized on IBM Q portal:&lt;/p&gt;
 
-&lt;figure align=&quot;center&quot; class=&quot;image&quot;&gt;
-  &lt;img src=&quot;/assets/circuit_4_1.png&quot; alt=&quot;&quot; width=&quot;900&quot; height=&quot;300&quot; /&gt;
-  &lt;figcaption align=&quot;center&quot; style=&quot;font-size:20px&quot;&gt;&lt;/figcaption&gt;
+&lt;figure class=&quot;image&quot;&gt;
+  &lt;img src=&quot;/assets/circuit_4_1.png&quot; alt=&quot;&quot; /&gt;
+  &lt;figcaption&gt;&lt;/figcaption&gt;
 &lt;/figure&gt;
 
-&lt;figure align=&quot;center&quot; class=&quot;image&quot;&gt;
-  &lt;img src=&quot;/assets/circuit_4_2.png&quot; alt=&quot;&quot; width=&quot;900&quot; height=&quot;300&quot; /&gt;
-  &lt;figcaption align=&quot;center&quot; style=&quot;font-size:20px&quot;&gt;&lt;/figcaption&gt;
+&lt;figure class=&quot;image&quot;&gt;
+  &lt;img src=&quot;/assets/circuit_4_2.png&quot; alt=&quot;&quot; /&gt;
+  &lt;figcaption&gt;&lt;/figcaption&gt;
 &lt;/figure&gt;
 
 &lt;p&gt;After running on a simulator, the results look like :&lt;/p&gt;
@@ -522,9 +522,9 @@ freqs = top_indices*frame_rate/n&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_sa
 
 &lt;p&gt;The circuit as visualized on IBM Q portal:&lt;/p&gt;
 
-&lt;figure align=&quot;center&quot; class=&quot;image&quot;&gt;
-  &lt;img src=&quot;/assets/circuit_3.png&quot; alt=&quot;&quot; width=&quot;900&quot; height=&quot;300&quot; /&gt;
-  &lt;figcaption align=&quot;center&quot; style=&quot;font-size:20px&quot;&gt;&lt;/figcaption&gt;
+&lt;figure class=&quot;image&quot;&gt;
+  &lt;img src=&quot;/assets/circuit_3.png&quot; alt=&quot;&quot; /&gt;
+  &lt;figcaption&gt;&lt;/figcaption&gt;
 &lt;/figure&gt;
 
 &lt;p&gt;After running on a simulator, the results look like :&lt;/p&gt;
@@ -602,4 +602,4 @@ freqs = top_indices*frame_rate/n&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_sa
   &lt;li&gt;&lt;a href=&quot;https://arxiv.org/abs/quant-ph/0504100&quot;&gt;“Decompositions of general quantum gates”&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;https://arxiv.org/abs/1803.04933&quot;&gt;“Approximate Quantum Fourier Transform”&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;https://algassert.com/quirk&quot;&gt;“Quirk quantum circuit visualizer”&lt;/a&gt;&lt;/li&gt;
-&lt;/ol&gt;</content><author><name></name></author><summary type="html">Read this: article by BCG talking about the economic impact of quantum computing in the NISQ era and beyond - which estimates the economic impact of quantum computing in the next 5 years to be in billions of dollars.</summary></entry></feed>
+&lt;/ol&gt;</content><author><name></name></author><summary type="html">Do read this: article by BCG predicting the economic impact of quantum computing in the NISQ era and beyond - which estimates the economic impact of quantum computing in the next 5 years to be $2 - 5 billion.</summary></entry></feed>

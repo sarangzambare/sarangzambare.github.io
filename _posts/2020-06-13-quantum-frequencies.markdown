@@ -1,15 +1,15 @@
 ---
 layout: post
-title:  "Quantum Computing"
-sub_title: "Calculating frequencies in an audio file using a quantum computer"
+title:  "Quantum Computing to find frequencies in an audio file"
+description: "Because why not"
 date:   2020-06-13 15:15:52 -0400
 categories: jekyll update
 ---
 
 
-Read this: [article][bcg_quantum] by BCG talking about the economic impact of quantum computing in the [NISQ era][nisq_era] and beyond - which estimates the economic impact of quantum computing in the next 5 years to be in billions of dollars.
+Do read this: [article][bcg_quantum] by BCG predicting the economic impact of quantum computing in the [NISQ era][nisq_era] and beyond - which estimates the economic impact of quantum computing in the next 5 years to be $2 - 5 billion.
 
-I decided to make a tangible application on a quantum computer - however simple it maybe.
+My inner quantum physicist sprung into action and I decided to make a tangible application on a quantum computer - however simple it maybe.
 
 
 All code can be found at this [repository][main_code]

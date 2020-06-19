@@ -36,11 +36,12 @@ texture:
   tagline: Comedian
   date_format: "%b %-d, %Y"
   style: [black]
+  showNav: false
 
   social_links:
     twitter: sarangz
     github:  sarangzambare
-    linkedIn: in/sarangzambare # format: locale/username
+    linkedIn: in/sarang-zambare # format: locale/username
 show_excerpts: true
 plugins:
   - jekyll-feed
