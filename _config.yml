@@ -46,6 +46,9 @@ plugins:
   - jekyll-feed
   - jekyll-seo-tag
 
+# Google Analytics
+google_analytics: UA-170150707-1
+
 # Exclude from processing.
 # The following items will not be processed, by default.
 # Any item listed under the `exclude:` key here will be automatically added to
