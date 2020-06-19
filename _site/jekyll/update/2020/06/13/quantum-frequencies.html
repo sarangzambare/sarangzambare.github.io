@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<link href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,400i,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<title>Quantum Computing</title>
+<!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Quantum Computing | Your awesome title</title>
+<meta name="generator" content="Jekyll v4.1.0" />
+<meta property="og:title" content="Quantum Computing" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Read this: article by BCG talking about the economic impact of quantum computing in the NISQ era and beyond - which estimates the economic impact of quantum computing in the next 5 years to be in billions of dollars." />
+<meta property="og:description" content="Read this: article by BCG talking about the economic impact of quantum computing in the NISQ era and beyond - which estimates the economic impact of quantum computing in the next 5 years to be in billions of dollars." />
+<link rel="canonical" href="http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies.html" />
+<meta property="og:url" content="http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies.html" />
+<meta property="og:site_name" content="Your awesome title" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-06-13T15:15:52-04:00" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies.html","headline":"Quantum Computing","dateModified":"2020-06-13T15:15:52-04:00","datePublished":"2020-06-13T15:15:52-04:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies.html"},"description":"Read this: article by BCG talking about the economic impact of quantum computing in the NISQ era and beyond - which estimates the economic impact of quantum computing in the next 5 years to be in billions of dollars.","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+</head>
+<body>
+  <header class="texture-black">
+    <div class="container"></div><div class="container">
+	<h1>Quantum Computing</h1>
+	<h4 class="post-description"></h4>
+	<div class="post-date" style="margin-top:20px">
+		Published on Jun 13, 2020
+	</div>
+	<ul class="post-tags"><li>jekyll</li><li>update</li></ul>
+</div>
+</header>
+  <main>
+    <div class="container">
+      <div class="post-container">
+          <p>Read this: <a href="https://www.bcg.com/publications/2019/quantum-computers-create-value-when.aspx">article</a> by BCG talking about the economic impact of quantum computing in the <a href="https://arxiv.org/abs/1801.00862">NISQ era</a> and beyond - which estimates the economic impact of quantum computing in the next 5 years to be in billions of dollars.</p>
+
+<p>I decided to make a tangible application on a quantum computer - however simple it maybe.</p>
+
+<p>All code can be found at this <a href="https://github.com/sarangzambare/quantum_frequency_detector">repository</a></p>
+
+<h2 id="so-whats-happening-exactly-">So What’s Happening Exactly ?</h2>
+
+<h3 id="tldr---i-want-to-make-a-frequency-detector-using-a-quantum-computer">TLDR; - I want to make a frequency detector using a quantum computer</h3>
+
+<p>First things first - what am I trying here ? - basically I am trying to build a frequency detector on a quantum computer, audio file goes in and most dominant frequencies come out, thats it. (some might ask - aren’t you making a glorified version of a quantum version of discrete fourier transform ? -&gt; well yeh but sshhh!). I plan to start with simple audio signal of a pure sine wave. If things work out I may try to record a note played on a guitar.</p>
+
+<h2 id="1-quantum-fourier-transform">1. Quantum Fourier Transform</h2>
+
+<p>QFT is the quantum version of the discrete fourier transform. In QFT we encode the input vector as a set of amplitudes of the basis states of the quantum system. Hence, the number of points we can operate over is restricted by the number of qubits available to us.</p>
+
+<p>The classical fourier transform acts on a vector \((x_{0}, x_{1},...,x_{N-1})\) and calculates \((y_{0}, y_{1},...,y_{N-1})\) where</p>
+
+\[\large y_{k} = \frac{1}{\sqrt{N}}\sum_{i=0}^{N-1}x_{i}\omega_{N}^{-ik}\]
+
+<p>where \(\omega_{N}=e^{\frac{2\pi i}{N}}\)</p>
+
+<p>The quantum fourier transform does something similar. It acts on a quantum state</p>
+
+\[\large |x\rangle = \sum_{i=0}^{N-1}x_{i}|i\rangle\]
+
+<p>and maps it to a quantum state</p>
+
+\[\large |y\rangle =\sum_{i=0}^{N-1}y_{i}|i\rangle\]
+
+<p>according to the equation:</p>
+
+\[\large y_{k} = \frac{1}{\sqrt{N}}\sum_{i=0}^{N-1}x_{i}\omega_{N}^{ik},\;\;\;\;\; k = 0,1,2,...,  N-1\]
+
+<p>I am using the convention which makes the QFT have the same effect as the <strong>inverse</strong> discrete fourier transform. Depending on the implementation of the circuit this convention can change.</p>
+
+<p>If we deal with basis states then QFT can also be expressed as a map:</p>
+
+\[\large QFT |x\rangle = \frac{1}{\sqrt{N}}\sum_{k=0}^{N-1}\omega_{N}^{xk}|k\rangle,\;\;\;\;\; k = 0,1,2,...,  N-1\]
+
+<p>If you are the sort of person who better understands stuff in terms of unitaries, the equivalent unitary for QFT is</p>
+
+<p><img src="/assets/unitary.png" alt="QFT Unitary" /></p>
+
+<h3 id="11-building-the-quantum-circuit-for-qft">1.1 Building the quantum circuit for QFT</h3>
+
+<figure align="center" class="image">
+  <img src="/assets/qft_circuit.png" alt="" width="1000" height="250" />
+  <figcaption align="center" style="font-size:20px"></figcaption>
+</figure>
+
+<p>* <a href="https://algassert.com/quirk">Quirk visualizer by Craig Gidney</a></p>
+
+<p>The quantum processors that we currently have encode operations in quantum gates. The next few lines rewrite the QFT equation into a form which can be implemented as a quantum circuit using the commonly available quantum gates. You can skip this if you want.</p>
+
+\[\large  QFT |x\rangle = \frac{1}{\sqrt{N}}\sum_{k=0}^{2^{n}-1}\omega_{N}^{xk}|k\rangle = \frac{1}{\sqrt{N}}\sum_{k_{1}\in \{0,1\}}\sum_{k_{2}\in \{0,1\}}\sum_{k_{3}\in \{0,1\}}\text{...}\sum_{k_{n}\in \{0,1\}}\omega_{N}^{x\sum_{j=1}^{n}k_{j}2^{n-j}}|k_{1}k_{2}k_{3}...k_{n}\rangle\]
+
+<h3 id="12-digression">1.2 Digression</h3>
+<p>To understand the above equation it would help to expand it using a small n. For example for a 2 qubit system, the basis states are</p>
+
+\[\large |00\rangle, |01\rangle, |10\rangle, |11\rangle\]
+
+\[\large QFT |x\rangle = \frac{1}{\sqrt{4}}\sum_{k_{1}\in\{0,1\}}\sum_{k_{2}\in\{0,1\}}\omega_{4}^{x\sum_{j=1}^{2}k_{j}2^{2-j}}|k_{1},k_{2}\rangle\]
+
+<h3 id="13-moving-on">1.3 Moving on</h3>
+
+<p>Hence,</p>
+
+\[\large QFT|x\rangle = \frac{1}{\sqrt{N}}\sum_{k_{1}\in \{0,1\}}\sum_{k_{2}\in \{0,1\}}\sum_{k_{3}\in \{0,1\}}\text{...}\sum_{k_{n}\in \{0,1\}} \bigotimes_{j=1}^{n}\omega_{N}^{xk_{j}2^{n-j}}|k_{j}\rangle\]
+
+\[\large = \frac{1}{\sqrt{N}}\sum_{k_{1}\in \{0,1\}}\sum_{k_{2}\in \{0,1\}}\sum_{k_{3}\in \{0,1\}}\text{...}\sum_{k_{n}\in \{0,1\}}\omega_{N}^{xk_{1}2^{n-1}}|k_{1}\rangle\otimes \bigotimes_{j=2}^{n}\omega_{N}^{xk_{j}2^{n-j}}|k_{j}\rangle\]
+
+\[\large = \frac{1}{\sqrt{N}}\left(\sum_{k_{1}\in\{0,1\}}\omega_{N}^{xk_{1}2^{n-1}}|k_1\rangle\right)\otimes\left(\sum_{k_{2}\in\{0,1\}}\omega_{N}^{xk_{2}2^{n-2}}|k_2\rangle\right)\otimes\sum_{k_{3}\in \{0,1\}}\text{...}\sum_{k_{n}\in \{0,1\}}\omega_{N}^{xk_{3}2^{n-3}}|k_3\rangle\otimes\bigotimes_{j=3}^{n}\omega_{N}^{xk_{j}2^{n-j}}|k_{j}\rangle\]
+
+\[\large = \frac{1}{\sqrt{N}}\left(\sum_{k_{1}\in\{0,1\}}\omega_{N}^{xk_{1}2^{n-1}}|k_1\rangle\right)\otimes\left(\sum_{k_{2}\in\{0,1\}}\omega_{N}^{xk_{2}2^{n-2}}|k_2\rangle\right)\otimes\left(\sum_{k_{3}\in\{0,1\}}\omega_{N}^{xk_{3}2^{n-3}}|k_3\rangle\right)\otimes\sum_{k_{4}\in \{0,1\}}\text{...}\sum_{k_{n}\in \{0,1\}}\omega_{N}^{xk_{4}2^{n-4}}|k_4\rangle\otimes\bigotimes_{j=4}^{n}\omega_{N}^{xk_{j}2^{n-j}}|k_{j}\rangle\]
+
+<p>Hence, the original QFT equation can be rewritten in terms of individual qubits as :</p>
+
+\[\large = \frac{1}{\sqrt{N}}\bigotimes_{j=1}^{n}\sum_{k_{j}\in\{0,1\}}\omega_{N}^{xk_{j}2^{n-j}}|k_j\rangle = \frac{1}{\sqrt{N}}\bigotimes_{j=1}^{n}\left(|0\rangle + \omega_{N}^{x2^{n-j}}|1\rangle\right)\]
+
+<p>Now,</p>
+
+\[\Large \omega_{N}^{x2^{n-j}} = e^{\frac{2\pi i}{2^{n}}x2^{n-j}} = e^{2\pi i(x2^{-j})}\]
+
+<p>The exponent can be further simplified as:</p>
+
+\[\large x2^{-j} = \sum_{r=1}^{n-j}x_{r}2^{n-j-r} + \sum_{r=n-j+1}^{n}x_{r}2^{n-j-r}\]
+
+\[\large = a(j) + b(j)\]
+
+<p>where \(x_{r}\) are the binary components of \(x\)</p>
+
+<p>Notice that \(a(j)\) above is always a whole number, and</p>
+
+\[\large b(j) = 0.x_{n-j+1}x_{n-j+2}...x_{n}\]
+
+<p>where the fractional binary notation as below is used:</p>
+
+\[\large [0.x_{1}x_{2}...x_{m}] = \sum_{k=1}^{m}x_{k}2^{-k}\]
+
+<p>Hence,</p>
+
+\[\Large \omega_{N}^{x2^{n-j}} = e^{2\pi ia(j)}.e^{2\pi ib(j)} = e^{2\pi i[0.x_{n-j+1}x_{n-j+2}...x_{n}]}\]
+
+<p>Finally we can write:</p>
+
+\[\large  QFT|x_{1}x_{2}...x_{n}\rangle = \frac{1}{\sqrt{N}}\bigotimes_{j=1}^{n}(|0\rangle + e^{2\pi i[0.x_{n-j+1}x_{n-j+2}...x_{n}]}|1\rangle)\]
+
+\[\large = \frac{1}{\sqrt{N}}\left(|0\rangle + e^{2\pi i[0.x_{n}]}|1\rangle\right) \otimes \left(|0\rangle + e^{2\pi i[0.x_{n-1}x_{n}]}|1\rangle\right) \otimes ... \otimes \left(|0\rangle + e^{2\pi i[0.x_{1}x_{2}...x_{n}]}|1\rangle\right)\]
+
+<p>Now that we have the QFT formula as a tensor product of each individual qubit, it would be easier to see what gates would get us the superposition in the above equation. The QFT circuit mainly makes use of two gates - Hadamard gate (H) and a parametric controlled phase gate \(R_{m}\).</p>
+
+<ol>
+  <li><strong>Hadamard Gate (H)</strong></li>
+</ol>
+
+<p><img src="/assets/hadamard_gate.png" alt="Hadamard Gate" /></p>
+
+<p>The Hadamard gate is the most commonly used gate to put a pure qubit into a superposition state. It coverts qubits from the Pauli-Z basis to the Pauli-X basis. Its action is given as follows:</p>
+
+\[\large H|0\rangle = \frac{|0\rangle + |1\rangle}{\sqrt{2}} = |+\rangle\]
+
+\[\large H|1\rangle = \frac{|0\rangle - |1\rangle}{\sqrt{2}} = |-\rangle\]
+
+<p>and in general:</p>
+
+\[\large H|x\rangle = \frac{|0\rangle + e^{\frac{2\pi ix}{2}}|1\rangle}{\sqrt{2}}\]
+
+<ol>
+  <li><strong>Controlled Phase Gate</strong></li>
+</ol>
+
+<p><img src="/assets/phase_gate.png" alt="Controlled phase gate" /></p>
+
+<p>This is a two qubit controlled gate assuming that the control qubit is the most significant qubit, the action of this gate can be expressed as:</p>
+
+\[\large R_{\theta}|0x\rangle = |0x\rangle\]
+
+\[\large R_{\theta}|1x\rangle = e^{\frac{2\pi i}{2^{\theta}}}|1x\rangle\]
+
+<p>Using these two gates, and the equation derived for QFT, we can construct the full circuit to get us the desired superposition like so</p>
+
+<figure align="center" class="image">
+  <img src="/assets/qft_full.png" alt="" width="900" height="250" />
+  <figcaption align="center" style="font-size:20px"></figcaption>
+</figure>
+
+<p>* Wikipedia</p>
+
+<p>There’s a caveat here, the above circuit reverses the qubit order upside down, so many implementations swap the qubits to restore the qubit order. Depending on the application this swap may or may not be necessary. If you are having trouble understanding how does the circuit give us the needed superposition, I urge you to try writing it down for the case of 2 qubits. That’s what I did.</p>
+
+<p>QFT circuit can be very easily made using Qiskit :</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">qft_rotations</span><span class="p">(</span><span class="n">circuit</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="s2">"""Performs qft on the first n qubits in circuit (without swaps)"""</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">circuit</span>
+    <span class="n">n</span> <span class="o">-=</span> <span class="mi">1</span>
+    <span class="n">circuit</span><span class="p">.</span><span class="nf">h</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">qubit</span> <span class="k">in</span> <span class="n">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">circuit</span><span class="p">.</span><span class="nf">cu1</span><span class="p">(</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="n">qubit</span><span class="p">),</span> <span class="n">qubit</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="c1">#note the recursion</span>
+    <span class="n">qft_rotations</span><span class="p">(</span><span class="n">circuit</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">swap_registers</span><span class="p">(</span><span class="n">circuit</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">qubit</span> <span class="k">in</span> <span class="n">range</span><span class="p">(</span><span class="n">n</span><span class="o">/</span><span class="sr">/2):
+        circuit.swap(qubit, n-qubit-1)
+    return circuit
+
+def qft(circuit, n):
+    """QFT on the first n qubits in circuit"""
+    qft_rotations(circuit, n)
+    swap_registers(circuit, n)
+    return circuit</span></code></pre></figure>
+
+<h2 id="2-representing-audio-in-quantum-data">2. Representing Audio in quantum data</h2>
+
+<p>An audio file is simply a bunch of samples sampled at a specific sampling rate. Usually this rate is 44100Hz for CD quality audio. This means that the analog waveform is measured at 44100 equally spaced points within a second.</p>
+
+<figure align="center" class="image">
+  <img src="/assets/900_wave.png" alt="900Hz sine wave" width="" height="" />
+  <figcaption align="center" style="font-size:20px">900Hz sine wave</figcaption>
+</figure>
+
+<!-- ![900Hz sine wave audio samples](/assets/900_wave.png) -->
+
+<p>If we want to use QFT on such a wave we need to encode the value of each sample into the amplitudes of the basis states of our system. Consider this 3-qubit example:</p>
+
+<figure align="center" class="image">
+  <img src="/assets/900_wave_c.jpg" alt="3-qubit samples" width="" height="" />
+  <figcaption align="center" style="font-size:20px">3-qubit samples</figcaption>
+</figure>
+
+\[\large |\psi_{audio}\rangle = c_{0}|000\rangle + c_{1}|001\rangle + c_{2}|010\rangle + c_{3}|011\rangle + c_{4}|100\rangle + c_{5}|101\rangle + c_{6}|110\rangle + c_{7}|111\rangle\]
+
+<p>For a 3 qubit system, we can afford \(2^{3}=8\) samples, which are denoted by the Cs in the above figure,</p>
+
+<p>Note that Since \(\psi_{audio}\) is a quantum state, we need</p>
+
+\[\large \langle\psi_{audio}|\psi_{audio}\rangle = \sum_{i=0}^{7}|c_{i}|^{2} = 1\]
+
+<p>Therefore, the Cs we sample need to be normalised before we can make a quantum state out of them.</p>
+
+<h2 id="3-arbitrary-state-preparation">3. Arbitrary state preparation</h2>
+
+<p>After getting all the Cs, its not trivial to put a system into the exact superposition that we want. To do that, you want to know what <strong>Schmidt decomposition</strong> is</p>
+
+<h3 id="31-schmidt-decomposition-theorem">3.1 Schmidt Decomposition Theorem</h3>
+
+<p>Any vector \(\psi \in \mathcal{H}_{1} \otimes \mathcal{H}_{2}\) can be expressed in the form</p>
+
+\[\large \psi = \sum_{j}c_{j}|\epsilon_{j}\rangle|\eta_{j}\rangle\]
+
+<p>for non-negative real \(c_{j}\) and orthonormal sets \(\epsilon_{j}\in \mathcal{H}_{1}\) and \(\eta_{j}\in \mathcal{H}_{2}\). There are density operators \(\rho_{1}\) on \(\mathcal{H}_{1}\) and \(\rho_{2}\) on \(\mathcal{H}_{2}\) such that :</p>
+
+\[\large \langle\psi|(A \otimes 1)|\psi \rangle = tr[A\rho_{1}]\]
+
+\[\large \langle\psi|(1 \otimes B)|\psi \rangle = tr[A\rho_{2}]\]
+
+<p>for all observables \(A\) and \(B\) on \(\mathcal{H}_{1}\) and \(\mathcal{H}_{2}\) respectively, and the \(\{\epsilon_{j}\}\) can be chosen to be the eigenvectors of \(\rho_{1}\) corresponding to the non-zero eigenvalues \(p_{j}\), the vectors \(\{\eta_{j}\}\), the corresponding eigenvectors for \(\rho_{2}\), and the positive scalars \(c_{j} = \sqrt{p_{j}}\)</p>
+
+<h3 id="32-state-preparation">3.2 State preparation</h3>
+
+<p>A general n-qubit state is fully described by \(2^{n+1} - 2\) real parameters. These parameters are introduced sequentially in the form of C-NOT gates and single qubit rotation unitaries U. For example ,we can look at the process for a 4 qubit system below. For the general case I’d refer you to the paper <a href="https://arxiv.org/abs/1003.5760">“Quantum State Preparation with Universal Gate Decompositions”</a></p>
+
+<p>In the case of four qubits, the Hilbert space can be factorized into two parts each of two qubits. An arbitrary pure state of four qubits can then be represented using the standard Schmidt decomposition as</p>
+
+\[\large \psi = \sum_{i=1}^{4}\alpha_{i}|\psi\rangle_{i}|\phi\rangle_{i}\]
+
+<p>After that the entire process can be broken down into four phases.</p>
+
+<h4 id="phase-1">Phase 1</h4>
+
+<p>Starting with the initial state of all zeros, we generate the state with generalized schmidt coefficients on the first two qubits:</p>
+
+\[\large |0000\rangle = (\alpha_{1}|00\rangle + \alpha_{2}|01\rangle + \alpha_{3}|10\rangle + \alpha_{4}|11\rangle)|00\rangle\]
+
+<p>This can be done using a single C-NOT gate and single qubit rotations. For more details about this step refer <a href="https://arxiv.org/abs/quant-ph/0504100">“Decompositions of general quantum gates”</a></p>
+
+<h4 id="phase-2">Phase 2</h4>
+
+<p>We perform two C-NOT operations, one with the control
+on the first qubit and the target on the third qubit and the other
+one with the control on the second qubit and the target on the
+fourth qubit. In such a way we can “copy” the basis states
+of the first two qubits onto the respective states of the second
+two qubits. In this way we obtain a state of four qubits, which
+has the same Schmidt decomposition coefficients as the target</p>
+
+\[\large (\alpha_{1}|00\rangle + \alpha_{2}|01\rangle + \alpha_{3}|10\rangle + \alpha_{4}|11\rangle)|00\rangle \rightarrow (\alpha_{1}|00\rangle|00\rangle + \alpha_{2}|01\rangle|01\rangle + \alpha_{3}|10\rangle|10\rangle + \alpha_{4}|11\rangle|11\rangle)\]
+
+<h4 id="phase-3">Phase 3</h4>
+
+<p>Keeping the Schmidt decomposition form we apply the unitary operation that transforms the basis states of the first two qubits into the four states, we obtain:</p>
+
+\[\large |00\rangle \rightarrow |\psi\rangle_{1}\]
+
+\[\large |01\rangle \rightarrow |\psi\rangle_{2}\]
+
+\[\large |10\rangle \rightarrow |\psi\rangle_{3}\]
+
+\[\large |11\rangle \rightarrow |\psi\rangle_{4}\]
+
+<h4 id="phase-4">Phase 4</h4>
+
+<p>In the final phase of the circuit we perform a unitary operation on the third and fourth qubit in order to transform their computational basis states into the Schmidt basis states</p>
+
+\[\large |00\rangle \rightarrow |\phi\rangle_{1}\]
+
+\[\large |01\rangle \rightarrow |\phi\rangle_{2}\]
+
+\[\large |10\rangle \rightarrow |\phi\rangle_{3}\]
+
+\[\large |11\rangle \rightarrow |\phi\rangle_{4}\]
+
+<p>This completes the state preparation.</p>
+
+<h3 id="33-state-preparation-in-qiskit">3.3 State preparation in Qiskit</h3>
+
+<p>Thankfully, qiskit provides us with inbuilt functions for preparing arbitrary quantum states so we don’t have to do the above mathematical fuckery ourselves. Using Qiskit, a state preparer can be easily implemented using the following snippet of code:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">prepare_circuit</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="no">True</span><span class="p">):</span>
+
+    <span class="s2">"""
+    Args:
+    amplitudes: List - A list of amplitudes with length equal to power of 2
+    normalize: Bool - Optional flag to control normalization of samples, True by default
+    Returns:
+    circuit: QuantumCircuit - a quantum circuit initialized to the state given by amplitudes
+    """</span>
+    <span class="n">num_amplitudes</span> <span class="o">=</span> <span class="n">len</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+    <span class="n">assert</span> <span class="n">isPow2</span><span class="p">(</span><span class="n">num_amplitudes</span><span class="p">),</span> <span class="s1">'len(amplitudes) should be power of 2'</span>
+
+    <span class="n">num_qubits</span> <span class="o">=</span> <span class="n">int</span><span class="p">(</span><span class="n">getlog2</span><span class="p">(</span><span class="n">num_amplitudes</span><span class="p">))</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="no">QuantumRegister</span><span class="p">(</span><span class="n">num_qubits</span><span class="p">)</span>
+    <span class="n">qc</span> <span class="o">=</span> <span class="no">QuantumCircuit</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">normalize</span><span class="p">):</span>
+        <span class="n">ampls</span> <span class="o">=</span> <span class="n">samples</span> <span class="o">/</span> <span class="n">np</span><span class="p">.</span><span class="nf">linalg</span><span class="p">.</span><span class="nf">norm</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+    <span class="ss">else:
+        </span><span class="n">ampls</span> <span class="o">=</span> <span class="n">samples</span>
+
+    <span class="n">qc</span><span class="p">.</span><span class="nf">initialize</span><span class="p">(</span><span class="n">ampls</span><span class="p">,</span> <span class="p">[</span><span class="n">q</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="n">range</span><span class="p">(</span><span class="n">num_qubits</span><span class="p">)])</span>
+
+    <span class="k">return</span> <span class="n">qc</span></code></pre></figure>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div>
+
+<p>This is an example of how it looks, notice that it only uses C-NOT gates and single qubit rotations</p>
+
+<p><img src="/assets/init_circuit.png" alt="Init Circuit" /></p>
+
+<h3 id="34-important-note">3.4 Important note</h3>
+
+<p>Given the noisy quantum processors that we currently have, its imperative to minimise the number of gates we have as much as possible. <strong>In my experience, in a 4-qubit IBM-Q system, as few as 50 gates was enough to introduce noise enough to get garbage output.</strong></p>
+
+<p>Hence, practically you might want to do your own optimizations to the state preparation circuit (e.g. getting rid of small angle rotations), which the qiskit inbuilt function does not allow.</p>
+
+<h2 id="4-running-the-experiment-on-a-quantum-simulator">4. Running the experiment on a quantum simulator</h2>
+
+<p>Qiskit provides many simulator backend options, here I am going to use the qasm simulator backend, which mimics the behaviour of a noise-free real backend.</p>
+
+<p>Since its a simulator, I am working with 16 qubits, which means I will be able to load in \(2^{16} = 65536\) samples of my audio file.</p>
+
+<p>The entire circuit can be split into 4 parts -</p>
+
+<ol>
+  <li>WAV file processor</li>
+  <li>Quantum state preparation</li>
+  <li>Quantum Fourier Transform</li>
+  <li>Measurement</li>
+</ol>
+
+<p>I have used the <strong>pydub</strong> package to process the wav file. All quantum operations are done using Qiskit. The full code can be found in the linked github repository.</p>
+
+<p><img src="/assets/qfreq_big.png" alt="Pipeline" /></p>
+
+<h3 id="step-1---input-audio-file-and-prepare-a-quantum-state">Step 1 - Input Audio file and prepare a quantum state</h3>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">n_qubits</span> <span class="o">=</span> <span class="mi">16</span>
+<span class="n">audio</span> <span class="o">=</span> <span class="no">AudioSegment</span><span class="p">.</span><span class="nf">from_file</span><span class="p">(</span><span class="s1">'900hz.wav'</span><span class="p">)</span>
+<span class="n">samples</span> <span class="o">=</span> <span class="n">audio</span><span class="p">.</span><span class="nf">get_array_of_samples</span><span class="p">()[:</span><span class="mi">2</span><span class="o">**</span><span class="n">n_qubits</span><span class="p">]</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">'sample_num'</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s1">'value'</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">list</span><span class="p">(</span><span class="n">range</span><span class="p">(</span><span class="n">len</span><span class="p">(</span><span class="n">samples</span><span class="p">))),</span> <span class="n">samples</span><span class="p">)</span>
+
+<span class="c1"># prepare circuit</span>
+<span class="n">qcs</span> <span class="o">=</span> <span class="n">prepare_circuit_from_samples</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">n_qubits</span><span class="p">)</span></code></pre></figure>
+
+<figure align="center" class="image">
+  <img src="/assets/900_wave.png" alt="" width="" height="" />
+  <figcaption align="center" style="font-size:20px"></figcaption>
+</figure>
+
+<h3 id="step-2---apply-qft-and-get-amplitudes-in-the-fourier-space">Step 2 - Apply QFT and get amplitudes in the fourier space</h3>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">qcs</span> <span class="o">=</span> <span class="n">prepare_circuit_from_samples</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">n_qubits</span><span class="p">)</span>
+<span class="n">qft</span><span class="p">(</span><span class="n">qcs</span><span class="p">,</span> <span class="n">n_qubits</span><span class="p">)</span>
+<span class="n">qcs</span><span class="p">.</span><span class="nf">measure_all</span><span class="p">()</span>
+
+<span class="n">qasm_backend</span> <span class="o">=</span> <span class="no">Aer</span><span class="p">.</span><span class="nf">get_backend</span><span class="p">(</span><span class="s1">'qasm_simulator'</span><span class="p">)</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">execute</span><span class="p">(</span><span class="n">qcs</span><span class="p">,</span> <span class="n">qasm_backend</span><span class="p">,</span> <span class="n">shots</span><span class="o">=</span><span class="mi">8192</span><span class="p">).</span><span class="nf">result</span><span class="p">()</span></code></pre></figure>
+
+<h3 id="step-3---measurement">Step 3 - Measurement</h3>
+
+<p>When a quantum circuit is run, at the end each qubit is measured in the <strong>Pauli-Z</strong> basis. Hence, all the qubits collapse into one of the two eigenstates of the Pauli-Z operator. But they do so with the probabilities dictated by the superposition that we put the qubits in. The big mathematical fuckery that we did in section 1 was precisely to get each qubit in a superposition that would make the qubits collapse in a way that gives us the fourier transform of the input amplitudes.</p>
+
+<p>If the final output of the state is given by :</p>
+
+\[\large |\psi\rangle = \sum_{i}c_{i}|i\rangle\]
+
+<p>where \(i\) are the basis states, then the information we need is in the \(c_{i}\)</p>
+
+<p>However since we can only observe the distribution of the final qubits, we can only measure \(\|c_{i}\|^{2}\)</p>
+
+<p>To get this distribution we run the circuit many times, which is controlled by the <strong>shots</strong> parameter.</p>
+
+<p>After measurement, we still need to convert the distribution that we get into actual frequencies. This is a pretty standard operation on discrete fourier transforms. If you feel uncomfortable understanding the next few lines I’d suggest you see the discrete fourier transform page on wikipedia.</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">out</span> <span class="o">=</span> <span class="n">execute</span><span class="p">(</span><span class="n">qcs</span><span class="p">,</span> <span class="n">qasm_backend</span><span class="p">,</span> <span class="n">shots</span><span class="o">=</span><span class="mi">8192</span><span class="p">).</span><span class="nf">result</span><span class="p">()</span>
+<span class="n">counts</span> <span class="o">=</span> <span class="n">out</span><span class="p">.</span><span class="nf">get_counts</span><span class="p">()</span>
+<span class="n">fft</span> <span class="o">=</span> <span class="n">get_fft_from_counts</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">n_qubits</span><span class="p">)[</span><span class="ss">:n_samples</span><span class="o">/</span><span class="sr">/2]
+plot_samples(fft[:2000])</span></code></pre></figure>
+
+<p><img src="/assets/f_space.png" alt="f-space" /></p>
+
+<p>We see a nice peak at about 1300. To get the value of frequency we have to multiply this peak by \(\frac{frame\_rate}{n\_samples}\). Note that we can only measure upto \(\frac{frame\_rate}{2}Hz\) - which is the <strong>Nyquist limit</strong>. If you don’t know what that means google is your friend.</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">top_indices</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">argsort</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="p">.</span><span class="nf">array</span><span class="p">(</span><span class="n">fft</span><span class="p">))</span>
+<span class="n">freqs</span> <span class="o">=</span> <span class="n">top_indices</span><span class="o">*</span><span class="n">frame_rate</span><span class="o">/</span><span class="n">n_samples</span>
+<span class="c1"># get top 5 detected frequencies</span>
+<span class="n">freqs</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span>
+<span class="o">=&gt;</span> <span class="no">Prints</span> <span class="ss">out: </span><span class="n">array</span><span class="p">([</span><span class="mf">899.68414307</span><span class="p">,</span> <span class="mf">900.35705566</span><span class="p">,</span> <span class="mf">899.01123047</span><span class="p">,</span> <span class="mf">901.02996826</span><span class="p">,</span>
+       <span class="mf">898.33831787</span><span class="p">])</span></code></pre></figure>
+
+<p><strong>Nice! Great Success</strong></p>
+
+<h1 id="running-the-experiment-on-real-quantum-hardware">Running the experiment on real quantum hardware!</h1>
+
+<p>Totally different beast that is. Real quantum hardware that we currently have is extremely noisy.</p>
+
+<p>The way you access real quantum hardware is by making use of IBM - Q Experience. Currently it offers various real quantum backends. <strong>One of the backends has a capacity of 16 qubits (ibmq_16_melbourne), while the rest have only 5 qubits</strong></p>
+
+<h2 id="trial-1">Trial 1</h2>
+
+<p>I tried the circuit that I built in the previous sections as is on the 16 qubit backend - it failed.</p>
+
+<p>No surprises there, I was sure it couldn’t be that easy. The problem was that I was exceeding the max depth (number of gates) allowed by the backend.</p>
+
+<p><img src="/assets/error1.png" alt="error1" /></p>
+
+<p><strong>Result: Failure</strong></p>
+
+<h2 id="trial-2">Trial 2</h2>
+
+<p>I figured perhaps the 16 qubit experiment is a bit too much, so I tried simplifying it to 5 qubits, with a very low sample size of \(2^5 = 32\) samples. With such a small number of samples, to get a decent frequency resolution, I had to drastically decrease the sampling rate to \(2000\), which gave a frequency resolution of</p>
+
+\[\delta f = \frac{sampling\_rate}{n\_samples} = \frac{2000}{32} = 62.5\]
+
+<p>I first ran the experiment on the qasm_simulator to see how the desired output should look like:</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">n_qubits</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">n_samples</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="n">n_qubits</span>
+<span class="n">audio</span> <span class="o">=</span> <span class="no">AudioSegment</span><span class="p">.</span><span class="nf">from_file</span><span class="p">(</span><span class="s1">'900hz.wav'</span><span class="p">)</span>
+<span class="n">audio</span> <span class="o">=</span> <span class="n">audio</span><span class="p">.</span><span class="nf">set_frame_rate</span><span class="p">(</span><span class="mi">2000</span><span class="p">)</span>
+<span class="n">frame_rate</span> <span class="o">=</span> <span class="n">audio</span><span class="p">.</span><span class="nf">frame_rate</span> <span class="c1">#2000</span>
+<span class="n">samples</span> <span class="o">=</span> <span class="n">audio</span><span class="p">.</span><span class="nf">get_array_of_samples</span><span class="p">()[</span><span class="ss">:n_samples</span><span class="p">]</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="s1">'sample_num'</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="s1">'value'</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">list</span><span class="p">(</span><span class="n">range</span><span class="p">(</span><span class="n">len</span><span class="p">(</span><span class="n">samples</span><span class="p">))),</span> <span class="n">samples</span><span class="p">)</span></code></pre></figure>
+
+<p><img src="/assets/sine_2000.png" alt="sine_900_2000" /></p>
+
+<p>With so few samples, the plot starts loosing its sine-wavy looks.</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">qcs</span> <span class="o">=</span> <span class="n">prepare_circuit_from_samples</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">n_qubits</span><span class="p">)</span>
+<span class="n">qft</span><span class="p">(</span><span class="n">qcs</span><span class="p">,</span> <span class="n">n_qubits</span><span class="p">)</span>
+<span class="n">qcs</span><span class="p">.</span><span class="nf">measure_all</span><span class="p">()</span>
+
+<span class="n">qasm_backend</span> <span class="o">=</span> <span class="no">Aer</span><span class="p">.</span><span class="nf">get_backend</span><span class="p">(</span><span class="s1">'qasm_simulator'</span><span class="p">)</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">execute</span><span class="p">(</span><span class="n">qcs</span><span class="p">,</span> <span class="n">qasm_backend</span><span class="p">,</span> <span class="n">shots</span><span class="o">=</span><span class="mi">8192</span><span class="p">).</span><span class="nf">result</span><span class="p">()</span>
+<span class="n">counts</span> <span class="o">=</span> <span class="n">out</span><span class="p">.</span><span class="nf">get_counts</span><span class="p">()</span>
+<span class="n">fft</span> <span class="o">=</span> <span class="n">get_fft_from_counts</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">n_qubits</span><span class="p">)[</span><span class="ss">:n_samples</span><span class="o">/</span><span class="sr">/2]
+
+
+plt.xlabel('sample_num')
+plt.ylabel('value')
+plt.plot(list(range(len(fft[:]))), fft[:])
+
+top_indices = np.argsort(-np.array(fft))
+freqs = top_indices*frame_rate/n</span><span class="n">_samples</span>
+<span class="c1"># get top 5 detected frequencies</span>
+<span class="n">freqs</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span>
+<span class="o">=&gt;</span> <span class="no">Prints</span><span class="p">:</span> <span class="n">array</span><span class="p">([</span><span class="mi">875</span><span class="p">.</span> <span class="nf">,</span> <span class="mf">937.5</span><span class="p">,</span> <span class="mf">812.5</span><span class="p">,</span> <span class="mi">750</span><span class="p">.</span> <span class="nf">,</span> <span class="mf">687.5</span><span class="p">])</span></code></pre></figure>
+
+<p><img src="/assets/f_32.png" alt="f32" /></p>
+
+<p>The plot makes sense with one strong peak. Alright lets get real and try it on real hardware.</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">provider</span> <span class="o">=</span> <span class="no">IBMQ</span><span class="p">.</span><span class="nf">get_provider</span><span class="p">(</span><span class="n">hub</span><span class="o">=</span><span class="s1">'ibm-q'</span><span class="p">)</span>
+<span class="n">backend</span> <span class="o">=</span> <span class="n">least_busy</span><span class="p">(</span><span class="n">provider</span><span class="p">.</span><span class="nf">backends</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="nb">lambda</span> <span class="ss">x: </span><span class="n">x</span><span class="p">.</span><span class="nf">configuration</span><span class="p">().</span><span class="nf">n_qubits</span> <span class="o">&gt;=</span> <span class="n">n_qubits</span>
+                                       <span class="n">and</span> <span class="n">not</span> <span class="n">x</span><span class="p">.</span><span class="nf">configuration</span><span class="p">().</span><span class="nf">simulator</span>
+                                       <span class="n">and</span> <span class="n">x</span><span class="p">.</span><span class="nf">status</span><span class="p">().</span><span class="nf">operational</span><span class="o">==</span><span class="no">True</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"least busy backend: "</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
+<span class="o">=&gt;</span> <span class="n">least</span> <span class="n">busy</span> <span class="ss">backend:  </span><span class="n">ibmqx2</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">execute</span><span class="p">(</span><span class="n">qcs</span><span class="p">,</span> <span class="n">qasm_backend</span><span class="p">,</span> <span class="n">shots</span><span class="o">=</span><span class="mi">8192</span><span class="p">).</span><span class="nf">result</span><span class="p">()</span></code></pre></figure>
+
+<p>You can see the results of your experiments in the IBM Q Experience portal. For this particular experiment, it showed me this:</p>
+
+<p><img src="/assets/ibmq_32_histogram.png" alt="ibmq_32" /></p>
+
+<p>Which is gibberish, we ideally should get one single peak. So something’s clearly wrong.</p>
+
+<p><strong>Result: Failure</strong></p>
+
+<h2 id="trial-3">Trial 3</h2>
+
+<p>I thought maybe there is something wrong in the way the state is prepared from the audio file. This was supported by the fact that more than half of the gates in the circuit were actually used for state preparation.</p>
+
+<p>I reduced the number of qubits to 4, and created a dummy state comprising of basis states with linearly increasing amplitudes.</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">n_qubits</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">dummy_state</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="n">range</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="n">n_qubits</span><span class="p">)]</span>
+<span class="o">=&gt;</span> <span class="n">dummy_state</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span>
+
+<span class="n">qcs</span> <span class="o">=</span> <span class="n">prepare_circuit_from_samples</span><span class="p">(</span><span class="n">dummy_state</span><span class="p">,</span> <span class="n">n_qubits</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="no">True</span><span class="p">)</span>
+<span class="n">qcs</span><span class="p">.</span><span class="nf">measure_all</span><span class="p">()</span></code></pre></figure>
+
+<p>The circuit as visualized on IBM Q portal:</p>
+
+<figure align="center" class="image">
+  <img src="/assets/circuit_4_1.png" alt="" width="900" height="300" />
+  <figcaption align="center" style="font-size:20px"></figcaption>
+</figure>
+
+<figure align="center" class="image">
+  <img src="/assets/circuit_4_2.png" alt="" width="900" height="300" />
+  <figcaption align="center" style="font-size:20px"></figcaption>
+</figure>
+
+<p>After running on a simulator, the results look like :</p>
+
+<p><img src="/assets/f_16.png" alt="f_16" /></p>
+
+<p>Which looks good as expected.</p>
+
+<p>After running it on real hardware:</p>
+
+<p><img src="/assets/ibmq_16_dummy_histogram.png" alt="ibmq_16_dummy_histogram.png" /></p>
+
+<p>Its noisy again! borderline gibberish. Ideally the amplitudes should go up linearly. But at least the problem has been isolated.</p>
+
+<p>Lets try the same dummy state preparation with 3 qubits.</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">n_qubits</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">dummy_state</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="n">range</span><span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="n">n_qubits</span><span class="p">)]</span>
+<span class="o">=&gt;</span> <span class="n">dummy_state</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+
+<span class="n">qcs</span> <span class="o">=</span> <span class="n">prepare_circuit_from_samples</span><span class="p">(</span><span class="n">dummy_state</span><span class="p">,</span> <span class="n">n_qubits</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="no">True</span><span class="p">)</span>
+<span class="n">qcs</span><span class="p">.</span><span class="nf">measure_all</span><span class="p">()</span></code></pre></figure>
+
+<p>The circuit as visualized on IBM Q portal:</p>
+
+<figure align="center" class="image">
+  <img src="/assets/circuit_3.png" alt="" width="900" height="300" />
+  <figcaption align="center" style="font-size:20px"></figcaption>
+</figure>
+
+<p>After running on a simulator, the results look like :</p>
+
+<p><img src="/assets/f_8.png" alt="f_16" /></p>
+
+<p>Which looks good as expected.</p>
+
+<p>After running it on real hardware:</p>
+
+<p><img src="/assets/ibmq_8_dummy_histogram.png" alt="ibmq_8_dummy_histogram.png" /></p>
+
+<p>Now we are talking! This looks much more acceptable than previous experiments. Which sadly means that we will have to restrict ourselves a a meagre 3 qubits, which is only 8 samples. Lets see what we can do with it.</p>
+
+<p><strong>Result: almost Success</strong></p>
+
+<h2 id="trial-4">Trial 4</h2>
+
+<p>Running the entire circuit, with a sampling rate of \(2000\), and only 3 qubits</p>
+
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">n_qubits</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">n_samples</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="n">n_qubits</span>
+<span class="n">audio</span> <span class="o">=</span> <span class="no">AudioSegment</span><span class="p">.</span><span class="nf">from_file</span><span class="p">(</span><span class="s1">'900hz.wav'</span><span class="p">)</span>
+<span class="n">audio</span> <span class="o">=</span> <span class="n">audio</span><span class="p">.</span><span class="nf">set_frame_rate</span><span class="p">(</span><span class="mi">2000</span><span class="p">)</span>
+<span class="n">frame_rate</span> <span class="o">=</span> <span class="n">audio</span><span class="p">.</span><span class="nf">frame_rate</span> <span class="c1">#2000</span>
+<span class="n">samples</span> <span class="o">=</span> <span class="n">audio</span><span class="p">.</span><span class="nf">get_array_of_samples</span><span class="p">()[</span><span class="ss">:n_samples</span><span class="p">]</span>
+
+<span class="n">qcs</span> <span class="o">=</span> <span class="n">prepare_circuit_from_samples</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">n_qubits</span><span class="p">)</span>
+<span class="n">qft</span><span class="p">(</span><span class="n">qcs</span><span class="p">,</span> <span class="n">n_qubits</span><span class="p">)</span>
+<span class="n">qcs</span><span class="p">.</span><span class="nf">measure_all</span><span class="p">()</span>
+
+<span class="n">provider</span> <span class="o">=</span> <span class="no">IBMQ</span><span class="p">.</span><span class="nf">get_provider</span><span class="p">(</span><span class="n">hub</span><span class="o">=</span><span class="s1">'ibm-q'</span><span class="p">)</span>
+<span class="n">backend</span> <span class="o">=</span> <span class="n">least_busy</span><span class="p">(</span><span class="n">provider</span><span class="p">.</span><span class="nf">backends</span><span class="p">(</span><span class="n">filters</span><span class="o">=</span><span class="nb">lambda</span> <span class="ss">x: </span><span class="n">x</span><span class="p">.</span><span class="nf">configuration</span><span class="p">().</span><span class="nf">n_qubits</span> <span class="o">&gt;=</span> <span class="n">n_qubits</span>
+                                       <span class="n">and</span> <span class="n">not</span> <span class="n">x</span><span class="p">.</span><span class="nf">configuration</span><span class="p">().</span><span class="nf">simulator</span>
+                                       <span class="n">and</span> <span class="n">x</span><span class="p">.</span><span class="nf">status</span><span class="p">().</span><span class="nf">operational</span><span class="o">==</span><span class="no">True</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"least busy backend: "</span><span class="p">,</span> <span class="n">backend</span><span class="p">)</span>
+<span class="o">=&gt;</span> <span class="n">least</span> <span class="n">busy</span> <span class="ss">backend:  </span><span class="n">ibmqx2</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">execute</span><span class="p">(</span><span class="n">qcs</span><span class="p">,</span> <span class="n">qasm_backend</span><span class="p">,</span> <span class="n">shots</span><span class="o">=</span><span class="mi">8192</span><span class="p">).</span><span class="nf">result</span><span class="p">()</span></code></pre></figure>
+
+<p>The result looks like:</p>
+
+<p><img src="/assets/ibmq_8_histogram.png" alt="ibmq_8_histogram.png" /></p>
+
+<p>Nice! we see a clear peak. The peak seems to be at \(100\) which is \(4\). To get the associated frequency :</p>
+
+\[\delta f = \frac{2000}{8} = 250Hz\]
+
+\[F = 4 * \frac{sampling\_rate}{n\_samples} = 4 * \frac{2000}{8} \pm \delta f\]
+
+\[= 1000 \pm 250Hz\]
+
+<p>Nice!</p>
+
+<h3 id="result-success-">Result: Success! (?)</h3>
+
+<h2 id="i-gotta-say">I gotta say..</h2>
+
+<p>This work is more like a proof of concept. It may not look like much for now but as we move towards fault tolerant, less error prone quantum hardware, our capacities would increase exponentially.</p>
+
+<p>There could be a lot of ways in which this work can be improved even with the current hardware. For starters:</p>
+
+<ol>
+  <li>No error correction was used.</li>
+  <li>Approximate quantum fourier transform could’ve been used, where we get rid of small angle rotations to minimize the number of gates.</li>
+  <li>State preparation routine could be made approximate to further minimize number of gates.</li>
+</ol>
+
+<h3 id="references">References:</h3>
+
+<ol>
+  <li><a href="https://github.com/sarangzambare/quantum_frequency_detector">Code for this project</a></li>
+  <li><a href="https://www.bcg.com/publications/2019/quantum-computers-create-value-when.aspx">BCG Article talking about impact of quantum computers</a></li>
+  <li><a href="https://arxiv.org/abs/1801.00862">What is NISQ Era quantum hardware?</a></li>
+  <li><a href="https://arxiv.org/abs/1003.5760">“Quantum State Preparation with Universal Gate Decompositions”</a></li>
+  <li><a href="https://arxiv.org/abs/quant-ph/0504100">“Decompositions of general quantum gates”</a></li>
+  <li><a href="https://arxiv.org/abs/1803.04933">“Approximate Quantum Fourier Transform”</a></li>
+  <li><a href="https://algassert.com/quirk">“Quirk quantum circuit visualizer”</a></li>
+</ol>
+
+
+      </div>
+
+        <!-- Configure Disqus --></div>
+    <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+    
+  </main></body>

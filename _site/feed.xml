@@ -1,0 +1,605 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-06-19T14:12:51-04:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Your awesome title</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</subtitle><entry><title type="html">Quantum Computing</title><link href="http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies.html" rel="alternate" type="text/html" title="Quantum Computing" /><published>2020-06-13T15:15:52-04:00</published><updated>2020-06-13T15:15:52-04:00</updated><id>http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies</id><content type="html" xml:base="http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies.html">&lt;p&gt;Read this: &lt;a href=&quot;https://www.bcg.com/publications/2019/quantum-computers-create-value-when.aspx&quot;&gt;article&lt;/a&gt; by BCG talking about the economic impact of quantum computing in the &lt;a href=&quot;https://arxiv.org/abs/1801.00862&quot;&gt;NISQ era&lt;/a&gt; and beyond - which estimates the economic impact of quantum computing in the next 5 years to be in billions of dollars.&lt;/p&gt;
+
+&lt;p&gt;I decided to make a tangible application on a quantum computer - however simple it maybe.&lt;/p&gt;
+
+&lt;p&gt;All code can be found at this &lt;a href=&quot;https://github.com/sarangzambare/quantum_frequency_detector&quot;&gt;repository&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;so-whats-happening-exactly-&quot;&gt;So What’s Happening Exactly ?&lt;/h2&gt;
+
+&lt;h3 id=&quot;tldr---i-want-to-make-a-frequency-detector-using-a-quantum-computer&quot;&gt;TLDR; - I want to make a frequency detector using a quantum computer&lt;/h3&gt;
+
+&lt;p&gt;First things first - what am I trying here ? - basically I am trying to build a frequency detector on a quantum computer, audio file goes in and most dominant frequencies come out, thats it. (some might ask - aren’t you making a glorified version of a quantum version of discrete fourier transform ? -&amp;gt; well yeh but sshhh!). I plan to start with simple audio signal of a pure sine wave. If things work out I may try to record a note played on a guitar.&lt;/p&gt;
+
+&lt;h2 id=&quot;1-quantum-fourier-transform&quot;&gt;1. Quantum Fourier Transform&lt;/h2&gt;
+
+&lt;p&gt;QFT is the quantum version of the discrete fourier transform. In QFT we encode the input vector as a set of amplitudes of the basis states of the quantum system. Hence, the number of points we can operate over is restricted by the number of qubits available to us.&lt;/p&gt;
+
+&lt;p&gt;The classical fourier transform acts on a vector \((x_{0}, x_{1},...,x_{N-1})\) and calculates \((y_{0}, y_{1},...,y_{N-1})\) where&lt;/p&gt;
+
+\[\large y_{k} = \frac{1}{\sqrt{N}}\sum_{i=0}^{N-1}x_{i}\omega_{N}^{-ik}\]
+
+&lt;p&gt;where \(\omega_{N}=e^{\frac{2\pi i}{N}}\)&lt;/p&gt;
+
+&lt;p&gt;The quantum fourier transform does something similar. It acts on a quantum state&lt;/p&gt;
+
+\[\large |x\rangle = \sum_{i=0}^{N-1}x_{i}|i\rangle\]
+
+&lt;p&gt;and maps it to a quantum state&lt;/p&gt;
+
+\[\large |y\rangle =\sum_{i=0}^{N-1}y_{i}|i\rangle\]
+
+&lt;p&gt;according to the equation:&lt;/p&gt;
+
+\[\large y_{k} = \frac{1}{\sqrt{N}}\sum_{i=0}^{N-1}x_{i}\omega_{N}^{ik},\;\;\;\;\; k = 0,1,2,...,  N-1\]
+
+&lt;p&gt;I am using the convention which makes the QFT have the same effect as the &lt;strong&gt;inverse&lt;/strong&gt; discrete fourier transform. Depending on the implementation of the circuit this convention can change.&lt;/p&gt;
+
+&lt;p&gt;If we deal with basis states then QFT can also be expressed as a map:&lt;/p&gt;
+
+\[\large QFT |x\rangle = \frac{1}{\sqrt{N}}\sum_{k=0}^{N-1}\omega_{N}^{xk}|k\rangle,\;\;\;\;\; k = 0,1,2,...,  N-1\]
+
+&lt;p&gt;If you are the sort of person who better understands stuff in terms of unitaries, the equivalent unitary for QFT is&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/unitary.png&quot; alt=&quot;QFT Unitary&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;11-building-the-quantum-circuit-for-qft&quot;&gt;1.1 Building the quantum circuit for QFT&lt;/h3&gt;
+
+&lt;figure align=&quot;center&quot; class=&quot;image&quot;&gt;
+  &lt;img src=&quot;/assets/qft_circuit.png&quot; alt=&quot;&quot; width=&quot;1000&quot; height=&quot;250&quot; /&gt;
+  &lt;figcaption align=&quot;center&quot; style=&quot;font-size:20px&quot;&gt;&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;p&gt;* &lt;a href=&quot;https://algassert.com/quirk&quot;&gt;Quirk visualizer by Craig Gidney&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;The quantum processors that we currently have encode operations in quantum gates. The next few lines rewrite the QFT equation into a form which can be implemented as a quantum circuit using the commonly available quantum gates. You can skip this if you want.&lt;/p&gt;
+
+\[\large  QFT |x\rangle = \frac{1}{\sqrt{N}}\sum_{k=0}^{2^{n}-1}\omega_{N}^{xk}|k\rangle = \frac{1}{\sqrt{N}}\sum_{k_{1}\in \{0,1\}}\sum_{k_{2}\in \{0,1\}}\sum_{k_{3}\in \{0,1\}}\text{...}\sum_{k_{n}\in \{0,1\}}\omega_{N}^{x\sum_{j=1}^{n}k_{j}2^{n-j}}|k_{1}k_{2}k_{3}...k_{n}\rangle\]
+
+&lt;h3 id=&quot;12-digression&quot;&gt;1.2 Digression&lt;/h3&gt;
+&lt;p&gt;To understand the above equation it would help to expand it using a small n. For example for a 2 qubit system, the basis states are&lt;/p&gt;
+
+\[\large |00\rangle, |01\rangle, |10\rangle, |11\rangle\]
+
+\[\large QFT |x\rangle = \frac{1}{\sqrt{4}}\sum_{k_{1}\in\{0,1\}}\sum_{k_{2}\in\{0,1\}}\omega_{4}^{x\sum_{j=1}^{2}k_{j}2^{2-j}}|k_{1},k_{2}\rangle\]
+
+&lt;h3 id=&quot;13-moving-on&quot;&gt;1.3 Moving on&lt;/h3&gt;
+
+&lt;p&gt;Hence,&lt;/p&gt;
+
+\[\large QFT|x\rangle = \frac{1}{\sqrt{N}}\sum_{k_{1}\in \{0,1\}}\sum_{k_{2}\in \{0,1\}}\sum_{k_{3}\in \{0,1\}}\text{...}\sum_{k_{n}\in \{0,1\}} \bigotimes_{j=1}^{n}\omega_{N}^{xk_{j}2^{n-j}}|k_{j}\rangle\]
+
+\[\large = \frac{1}{\sqrt{N}}\sum_{k_{1}\in \{0,1\}}\sum_{k_{2}\in \{0,1\}}\sum_{k_{3}\in \{0,1\}}\text{...}\sum_{k_{n}\in \{0,1\}}\omega_{N}^{xk_{1}2^{n-1}}|k_{1}\rangle\otimes \bigotimes_{j=2}^{n}\omega_{N}^{xk_{j}2^{n-j}}|k_{j}\rangle\]
+
+\[\large = \frac{1}{\sqrt{N}}\left(\sum_{k_{1}\in\{0,1\}}\omega_{N}^{xk_{1}2^{n-1}}|k_1\rangle\right)\otimes\left(\sum_{k_{2}\in\{0,1\}}\omega_{N}^{xk_{2}2^{n-2}}|k_2\rangle\right)\otimes\sum_{k_{3}\in \{0,1\}}\text{...}\sum_{k_{n}\in \{0,1\}}\omega_{N}^{xk_{3}2^{n-3}}|k_3\rangle\otimes\bigotimes_{j=3}^{n}\omega_{N}^{xk_{j}2^{n-j}}|k_{j}\rangle\]
+
+\[\large = \frac{1}{\sqrt{N}}\left(\sum_{k_{1}\in\{0,1\}}\omega_{N}^{xk_{1}2^{n-1}}|k_1\rangle\right)\otimes\left(\sum_{k_{2}\in\{0,1\}}\omega_{N}^{xk_{2}2^{n-2}}|k_2\rangle\right)\otimes\left(\sum_{k_{3}\in\{0,1\}}\omega_{N}^{xk_{3}2^{n-3}}|k_3\rangle\right)\otimes\sum_{k_{4}\in \{0,1\}}\text{...}\sum_{k_{n}\in \{0,1\}}\omega_{N}^{xk_{4}2^{n-4}}|k_4\rangle\otimes\bigotimes_{j=4}^{n}\omega_{N}^{xk_{j}2^{n-j}}|k_{j}\rangle\]
+
+&lt;p&gt;Hence, the original QFT equation can be rewritten in terms of individual qubits as :&lt;/p&gt;
+
+\[\large = \frac{1}{\sqrt{N}}\bigotimes_{j=1}^{n}\sum_{k_{j}\in\{0,1\}}\omega_{N}^{xk_{j}2^{n-j}}|k_j\rangle = \frac{1}{\sqrt{N}}\bigotimes_{j=1}^{n}\left(|0\rangle + \omega_{N}^{x2^{n-j}}|1\rangle\right)\]
+
+&lt;p&gt;Now,&lt;/p&gt;
+
+\[\Large \omega_{N}^{x2^{n-j}} = e^{\frac{2\pi i}{2^{n}}x2^{n-j}} = e^{2\pi i(x2^{-j})}\]
+
+&lt;p&gt;The exponent can be further simplified as:&lt;/p&gt;
+
+\[\large x2^{-j} = \sum_{r=1}^{n-j}x_{r}2^{n-j-r} + \sum_{r=n-j+1}^{n}x_{r}2^{n-j-r}\]
+
+\[\large = a(j) + b(j)\]
+
+&lt;p&gt;where \(x_{r}\) are the binary components of \(x\)&lt;/p&gt;
+
+&lt;p&gt;Notice that \(a(j)\) above is always a whole number, and&lt;/p&gt;
+
+\[\large b(j) = 0.x_{n-j+1}x_{n-j+2}...x_{n}\]
+
+&lt;p&gt;where the fractional binary notation as below is used:&lt;/p&gt;
+
+\[\large [0.x_{1}x_{2}...x_{m}] = \sum_{k=1}^{m}x_{k}2^{-k}\]
+
+&lt;p&gt;Hence,&lt;/p&gt;
+
+\[\Large \omega_{N}^{x2^{n-j}} = e^{2\pi ia(j)}.e^{2\pi ib(j)} = e^{2\pi i[0.x_{n-j+1}x_{n-j+2}...x_{n}]}\]
+
+&lt;p&gt;Finally we can write:&lt;/p&gt;
+
+\[\large  QFT|x_{1}x_{2}...x_{n}\rangle = \frac{1}{\sqrt{N}}\bigotimes_{j=1}^{n}(|0\rangle + e^{2\pi i[0.x_{n-j+1}x_{n-j+2}...x_{n}]}|1\rangle)\]
+
+\[\large = \frac{1}{\sqrt{N}}\left(|0\rangle + e^{2\pi i[0.x_{n}]}|1\rangle\right) \otimes \left(|0\rangle + e^{2\pi i[0.x_{n-1}x_{n}]}|1\rangle\right) \otimes ... \otimes \left(|0\rangle + e^{2\pi i[0.x_{1}x_{2}...x_{n}]}|1\rangle\right)\]
+
+&lt;p&gt;Now that we have the QFT formula as a tensor product of each individual qubit, it would be easier to see what gates would get us the superposition in the above equation. The QFT circuit mainly makes use of two gates - Hadamard gate (H) and a parametric controlled phase gate \(R_{m}\).&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;Hadamard Gate (H)&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/hadamard_gate.png&quot; alt=&quot;Hadamard Gate&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The Hadamard gate is the most commonly used gate to put a pure qubit into a superposition state. It coverts qubits from the Pauli-Z basis to the Pauli-X basis. Its action is given as follows:&lt;/p&gt;
+
+\[\large H|0\rangle = \frac{|0\rangle + |1\rangle}{\sqrt{2}} = |+\rangle\]
+
+\[\large H|1\rangle = \frac{|0\rangle - |1\rangle}{\sqrt{2}} = |-\rangle\]
+
+&lt;p&gt;and in general:&lt;/p&gt;
+
+\[\large H|x\rangle = \frac{|0\rangle + e^{\frac{2\pi ix}{2}}|1\rangle}{\sqrt{2}}\]
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;Controlled Phase Gate&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/phase_gate.png&quot; alt=&quot;Controlled phase gate&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This is a two qubit controlled gate assuming that the control qubit is the most significant qubit, the action of this gate can be expressed as:&lt;/p&gt;
+
+\[\large R_{\theta}|0x\rangle = |0x\rangle\]
+
+\[\large R_{\theta}|1x\rangle = e^{\frac{2\pi i}{2^{\theta}}}|1x\rangle\]
+
+&lt;p&gt;Using these two gates, and the equation derived for QFT, we can construct the full circuit to get us the desired superposition like so&lt;/p&gt;
+
+&lt;figure align=&quot;center&quot; class=&quot;image&quot;&gt;
+  &lt;img src=&quot;/assets/qft_full.png&quot; alt=&quot;&quot; width=&quot;900&quot; height=&quot;250&quot; /&gt;
+  &lt;figcaption align=&quot;center&quot; style=&quot;font-size:20px&quot;&gt;&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;p&gt;* Wikipedia&lt;/p&gt;
+
+&lt;p&gt;There’s a caveat here, the above circuit reverses the qubit order upside down, so many implementations swap the qubits to restore the qubit order. Depending on the application this swap may or may not be necessary. If you are having trouble understanding how does the circuit give us the needed superposition, I urge you to try writing it down for the case of 2 qubits. That’s what I did.&lt;/p&gt;
+
+&lt;p&gt;QFT circuit can be very easily made using Qiskit :&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;qft_rotations&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;circuit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&quot;Performs qft on the first n qubits in circuit (without swaps)&quot;&quot;&quot;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;circuit&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;circuit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;h&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;qubit&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;circuit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;cu1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pi&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;qubit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;qubit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;#note the recursion&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;qft_rotations&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;circuit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;swap_registers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;circuit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;qubit&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/2):
+        circuit.swap(qubit, n-qubit-1)
+    return circuit
+
+def qft(circuit, n):
+    &quot;&quot;&quot;QFT on the first n qubits in circuit&quot;&quot;&quot;
+    qft_rotations(circuit, n)
+    swap_registers(circuit, n)
+    return circuit&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h2 id=&quot;2-representing-audio-in-quantum-data&quot;&gt;2. Representing Audio in quantum data&lt;/h2&gt;
+
+&lt;p&gt;An audio file is simply a bunch of samples sampled at a specific sampling rate. Usually this rate is 44100Hz for CD quality audio. This means that the analog waveform is measured at 44100 equally spaced points within a second.&lt;/p&gt;
+
+&lt;figure align=&quot;center&quot; class=&quot;image&quot;&gt;
+  &lt;img src=&quot;/assets/900_wave.png&quot; alt=&quot;900Hz sine wave&quot; width=&quot;&quot; height=&quot;&quot; /&gt;
+  &lt;figcaption align=&quot;center&quot; style=&quot;font-size:20px&quot;&gt;900Hz sine wave&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;!-- ![900Hz sine wave audio samples](/assets/900_wave.png) --&gt;
+
+&lt;p&gt;If we want to use QFT on such a wave we need to encode the value of each sample into the amplitudes of the basis states of our system. Consider this 3-qubit example:&lt;/p&gt;
+
+&lt;figure align=&quot;center&quot; class=&quot;image&quot;&gt;
+  &lt;img src=&quot;/assets/900_wave_c.jpg&quot; alt=&quot;3-qubit samples&quot; width=&quot;&quot; height=&quot;&quot; /&gt;
+  &lt;figcaption align=&quot;center&quot; style=&quot;font-size:20px&quot;&gt;3-qubit samples&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+\[\large |\psi_{audio}\rangle = c_{0}|000\rangle + c_{1}|001\rangle + c_{2}|010\rangle + c_{3}|011\rangle + c_{4}|100\rangle + c_{5}|101\rangle + c_{6}|110\rangle + c_{7}|111\rangle\]
+
+&lt;p&gt;For a 3 qubit system, we can afford \(2^{3}=8\) samples, which are denoted by the Cs in the above figure,&lt;/p&gt;
+
+&lt;p&gt;Note that Since \(\psi_{audio}\) is a quantum state, we need&lt;/p&gt;
+
+\[\large \langle\psi_{audio}|\psi_{audio}\rangle = \sum_{i=0}^{7}|c_{i}|^{2} = 1\]
+
+&lt;p&gt;Therefore, the Cs we sample need to be normalised before we can make a quantum state out of them.&lt;/p&gt;
+
+&lt;h2 id=&quot;3-arbitrary-state-preparation&quot;&gt;3. Arbitrary state preparation&lt;/h2&gt;
+
+&lt;p&gt;After getting all the Cs, its not trivial to put a system into the exact superposition that we want. To do that, you want to know what &lt;strong&gt;Schmidt decomposition&lt;/strong&gt; is&lt;/p&gt;
+
+&lt;h3 id=&quot;31-schmidt-decomposition-theorem&quot;&gt;3.1 Schmidt Decomposition Theorem&lt;/h3&gt;
+
+&lt;p&gt;Any vector \(\psi \in \mathcal{H}_{1} \otimes \mathcal{H}_{2}\) can be expressed in the form&lt;/p&gt;
+
+\[\large \psi = \sum_{j}c_{j}|\epsilon_{j}\rangle|\eta_{j}\rangle\]
+
+&lt;p&gt;for non-negative real \(c_{j}\) and orthonormal sets \(\epsilon_{j}\in \mathcal{H}_{1}\) and \(\eta_{j}\in \mathcal{H}_{2}\). There are density operators \(\rho_{1}\) on \(\mathcal{H}_{1}\) and \(\rho_{2}\) on \(\mathcal{H}_{2}\) such that :&lt;/p&gt;
+
+\[\large \langle\psi|(A \otimes 1)|\psi \rangle = tr[A\rho_{1}]\]
+
+\[\large \langle\psi|(1 \otimes B)|\psi \rangle = tr[A\rho_{2}]\]
+
+&lt;p&gt;for all observables \(A\) and \(B\) on \(\mathcal{H}_{1}\) and \(\mathcal{H}_{2}\) respectively, and the \(\{\epsilon_{j}\}\) can be chosen to be the eigenvectors of \(\rho_{1}\) corresponding to the non-zero eigenvalues \(p_{j}\), the vectors \(\{\eta_{j}\}\), the corresponding eigenvectors for \(\rho_{2}\), and the positive scalars \(c_{j} = \sqrt{p_{j}}\)&lt;/p&gt;
+
+&lt;h3 id=&quot;32-state-preparation&quot;&gt;3.2 State preparation&lt;/h3&gt;
+
+&lt;p&gt;A general n-qubit state is fully described by \(2^{n+1} - 2\) real parameters. These parameters are introduced sequentially in the form of C-NOT gates and single qubit rotation unitaries U. For example ,we can look at the process for a 4 qubit system below. For the general case I’d refer you to the paper &lt;a href=&quot;https://arxiv.org/abs/1003.5760&quot;&gt;“Quantum State Preparation with Universal Gate Decompositions”&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;In the case of four qubits, the Hilbert space can be factorized into two parts each of two qubits. An arbitrary pure state of four qubits can then be represented using the standard Schmidt decomposition as&lt;/p&gt;
+
+\[\large \psi = \sum_{i=1}^{4}\alpha_{i}|\psi\rangle_{i}|\phi\rangle_{i}\]
+
+&lt;p&gt;After that the entire process can be broken down into four phases.&lt;/p&gt;
+
+&lt;h4 id=&quot;phase-1&quot;&gt;Phase 1&lt;/h4&gt;
+
+&lt;p&gt;Starting with the initial state of all zeros, we generate the state with generalized schmidt coefficients on the first two qubits:&lt;/p&gt;
+
+\[\large |0000\rangle = (\alpha_{1}|00\rangle + \alpha_{2}|01\rangle + \alpha_{3}|10\rangle + \alpha_{4}|11\rangle)|00\rangle\]
+
+&lt;p&gt;This can be done using a single C-NOT gate and single qubit rotations. For more details about this step refer &lt;a href=&quot;https://arxiv.org/abs/quant-ph/0504100&quot;&gt;“Decompositions of general quantum gates”&lt;/a&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;phase-2&quot;&gt;Phase 2&lt;/h4&gt;
+
+&lt;p&gt;We perform two C-NOT operations, one with the control
+on the first qubit and the target on the third qubit and the other
+one with the control on the second qubit and the target on the
+fourth qubit. In such a way we can “copy” the basis states
+of the first two qubits onto the respective states of the second
+two qubits. In this way we obtain a state of four qubits, which
+has the same Schmidt decomposition coefficients as the target&lt;/p&gt;
+
+\[\large (\alpha_{1}|00\rangle + \alpha_{2}|01\rangle + \alpha_{3}|10\rangle + \alpha_{4}|11\rangle)|00\rangle \rightarrow (\alpha_{1}|00\rangle|00\rangle + \alpha_{2}|01\rangle|01\rangle + \alpha_{3}|10\rangle|10\rangle + \alpha_{4}|11\rangle|11\rangle)\]
+
+&lt;h4 id=&quot;phase-3&quot;&gt;Phase 3&lt;/h4&gt;
+
+&lt;p&gt;Keeping the Schmidt decomposition form we apply the unitary operation that transforms the basis states of the first two qubits into the four states, we obtain:&lt;/p&gt;
+
+\[\large |00\rangle \rightarrow |\psi\rangle_{1}\]
+
+\[\large |01\rangle \rightarrow |\psi\rangle_{2}\]
+
+\[\large |10\rangle \rightarrow |\psi\rangle_{3}\]
+
+\[\large |11\rangle \rightarrow |\psi\rangle_{4}\]
+
+&lt;h4 id=&quot;phase-4&quot;&gt;Phase 4&lt;/h4&gt;
+
+&lt;p&gt;In the final phase of the circuit we perform a unitary operation on the third and fourth qubit in order to transform their computational basis states into the Schmidt basis states&lt;/p&gt;
+
+\[\large |00\rangle \rightarrow |\phi\rangle_{1}\]
+
+\[\large |01\rangle \rightarrow |\phi\rangle_{2}\]
+
+\[\large |10\rangle \rightarrow |\phi\rangle_{3}\]
+
+\[\large |11\rangle \rightarrow |\phi\rangle_{4}\]
+
+&lt;p&gt;This completes the state preparation.&lt;/p&gt;
+
+&lt;h3 id=&quot;33-state-preparation-in-qiskit&quot;&gt;3.3 State preparation in Qiskit&lt;/h3&gt;
+
+&lt;p&gt;Thankfully, qiskit provides us with inbuilt functions for preparing arbitrary quantum states so we don’t have to do the above mathematical fuckery ourselves. Using Qiskit, a state preparer can be easily implemented using the following snippet of code:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;prepare_circuit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;samples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;normalize&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+
+    &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&quot;
+    Args:
+    amplitudes: List - A list of amplitudes with length equal to power of 2
+    normalize: Bool - Optional flag to control normalization of samples, True by default
+    Returns:
+    circuit: QuantumCircuit - a quantum circuit initialized to the state given by amplitudes
+    &quot;&quot;&quot;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;num_amplitudes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;samples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;assert&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;isPow2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;num_amplitudes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'len(amplitudes) should be power of 2'&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;num_qubits&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getlog2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;num_amplitudes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;q&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;QuantumRegister&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;num_qubits&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;qc&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;QuantumCircuit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;q&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;normalize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;ampls&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;samples&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;linalg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;norm&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;samples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;ss&quot;&gt;else:
+        &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ampls&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;samples&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;qc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ampls&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;q&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;num_qubits&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)])&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;qc&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This is an example of how it looks, notice that it only uses C-NOT gates and single qubit rotations&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/init_circuit.png&quot; alt=&quot;Init Circuit&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;34-important-note&quot;&gt;3.4 Important note&lt;/h3&gt;
+
+&lt;p&gt;Given the noisy quantum processors that we currently have, its imperative to minimise the number of gates we have as much as possible. &lt;strong&gt;In my experience, in a 4-qubit IBM-Q system, as few as 50 gates was enough to introduce noise enough to get garbage output.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Hence, practically you might want to do your own optimizations to the state preparation circuit (e.g. getting rid of small angle rotations), which the qiskit inbuilt function does not allow.&lt;/p&gt;
+
+&lt;h2 id=&quot;4-running-the-experiment-on-a-quantum-simulator&quot;&gt;4. Running the experiment on a quantum simulator&lt;/h2&gt;
+
+&lt;p&gt;Qiskit provides many simulator backend options, here I am going to use the qasm simulator backend, which mimics the behaviour of a noise-free real backend.&lt;/p&gt;
+
+&lt;p&gt;Since its a simulator, I am working with 16 qubits, which means I will be able to load in \(2^{16} = 65536\) samples of my audio file.&lt;/p&gt;
+
+&lt;p&gt;The entire circuit can be split into 4 parts -&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;WAV file processor&lt;/li&gt;
+  &lt;li&gt;Quantum state preparation&lt;/li&gt;
+  &lt;li&gt;Quantum Fourier Transform&lt;/li&gt;
+  &lt;li&gt;Measurement&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;I have used the &lt;strong&gt;pydub&lt;/strong&gt; package to process the wav file. All quantum operations are done using Qiskit. The full code can be found in the linked github repository.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/qfreq_big.png&quot; alt=&quot;Pipeline&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;step-1---input-audio-file-and-prepare-a-quantum-state&quot;&gt;Step 1 - Input Audio file and prepare a quantum state&lt;/h3&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;n_qubits&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;16&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;audio&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;AudioSegment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;from_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'900hz.wav'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;samples&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;audio&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;get_array_of_samples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()[:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n_qubits&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;xlabel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'sample_num'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;ylabel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'value'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;samples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;samples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# prepare circuit&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;qcs&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;prepare_circuit_from_samples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;samples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n_qubits&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;figure align=&quot;center&quot; class=&quot;image&quot;&gt;
+  &lt;img src=&quot;/assets/900_wave.png&quot; alt=&quot;&quot; width=&quot;&quot; height=&quot;&quot; /&gt;
+  &lt;figcaption align=&quot;center&quot; style=&quot;font-size:20px&quot;&gt;&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;h3 id=&quot;step-2---apply-qft-and-get-amplitudes-in-the-fourier-space&quot;&gt;Step 2 - Apply QFT and get amplitudes in the fourier space&lt;/h3&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;qcs&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;prepare_circuit_from_samples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;samples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n_qubits&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;qft&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;qcs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n_qubits&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;qcs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;measure_all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;qasm_backend&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Aer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;get_backend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'qasm_simulator'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;out&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;execute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;qcs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;qasm_backend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shots&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8192&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;h3 id=&quot;step-3---measurement&quot;&gt;Step 3 - Measurement&lt;/h3&gt;
+
+&lt;p&gt;When a quantum circuit is run, at the end each qubit is measured in the &lt;strong&gt;Pauli-Z&lt;/strong&gt; basis. Hence, all the qubits collapse into one of the two eigenstates of the Pauli-Z operator. But they do so with the probabilities dictated by the superposition that we put the qubits in. The big mathematical fuckery that we did in section 1 was precisely to get each qubit in a superposition that would make the qubits collapse in a way that gives us the fourier transform of the input amplitudes.&lt;/p&gt;
+
+&lt;p&gt;If the final output of the state is given by :&lt;/p&gt;
+
+\[\large |\psi\rangle = \sum_{i}c_{i}|i\rangle\]
+
+&lt;p&gt;where \(i\) are the basis states, then the information we need is in the \(c_{i}\)&lt;/p&gt;
+
+&lt;p&gt;However since we can only observe the distribution of the final qubits, we can only measure \(\|c_{i}\|^{2}\)&lt;/p&gt;
+
+&lt;p&gt;To get this distribution we run the circuit many times, which is controlled by the &lt;strong&gt;shots&lt;/strong&gt; parameter.&lt;/p&gt;
+
+&lt;p&gt;After measurement, we still need to convert the distribution that we get into actual frequencies. This is a pretty standard operation on discrete fourier transforms. If you feel uncomfortable understanding the next few lines I’d suggest you see the discrete fourier transform page on wikipedia.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;out&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;execute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;qcs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;qasm_backend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shots&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8192&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;counts&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;get_counts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;fft&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;get_fft_from_counts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;counts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n_qubits&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:n_samples&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/2]
+plot_samples(fft[:2000])&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/f_space.png&quot; alt=&quot;f-space&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We see a nice peak at about 1300. To get the value of frequency we have to multiply this peak by \(\frac{frame\_rate}{n\_samples}\). Note that we can only measure upto \(\frac{frame\_rate}{2}Hz\) - which is the &lt;strong&gt;Nyquist limit&lt;/strong&gt;. If you don’t know what that means google is your friend.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;top_indices&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;argsort&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fft&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;freqs&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;top_indices&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;frame_rate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n_samples&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# get top 5 detected frequencies&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;freqs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Prints&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;out: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;899.68414307&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;900.35705566&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;899.01123047&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;901.02996826&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+       &lt;span class=&quot;mf&quot;&gt;898.33831787&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;strong&gt;Nice! Great Success&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;running-the-experiment-on-real-quantum-hardware&quot;&gt;Running the experiment on real quantum hardware!&lt;/h1&gt;
+
+&lt;p&gt;Totally different beast that is. Real quantum hardware that we currently have is extremely noisy.&lt;/p&gt;
+
+&lt;p&gt;The way you access real quantum hardware is by making use of IBM - Q Experience. Currently it offers various real quantum backends. &lt;strong&gt;One of the backends has a capacity of 16 qubits (ibmq_16_melbourne), while the rest have only 5 qubits&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;trial-1&quot;&gt;Trial 1&lt;/h2&gt;
+
+&lt;p&gt;I tried the circuit that I built in the previous sections as is on the 16 qubit backend - it failed.&lt;/p&gt;
+
+&lt;p&gt;No surprises there, I was sure it couldn’t be that easy. The problem was that I was exceeding the max depth (number of gates) allowed by the backend.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/error1.png&quot; alt=&quot;error1&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Result: Failure&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;trial-2&quot;&gt;Trial 2&lt;/h2&gt;
+
+&lt;p&gt;I figured perhaps the 16 qubit experiment is a bit too much, so I tried simplifying it to 5 qubits, with a very low sample size of \(2^5 = 32\) samples. With such a small number of samples, to get a decent frequency resolution, I had to drastically decrease the sampling rate to \(2000\), which gave a frequency resolution of&lt;/p&gt;
+
+\[\delta f = \frac{sampling\_rate}{n\_samples} = \frac{2000}{32} = 62.5\]
+
+&lt;p&gt;I first ran the experiment on the qasm_simulator to see how the desired output should look like:&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;n_qubits&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;n_samples&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n_qubits&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;audio&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;AudioSegment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;from_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'900hz.wav'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;audio&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;audio&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;set_frame_rate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;frame_rate&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;audio&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;frame_rate&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#2000&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;samples&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;audio&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;get_array_of_samples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:n_samples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;xlabel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'sample_num'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;ylabel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'value'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;samples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;samples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/sine_2000.png&quot; alt=&quot;sine_900_2000&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;With so few samples, the plot starts loosing its sine-wavy looks.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;qcs&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;prepare_circuit_from_samples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;samples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n_qubits&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;qft&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;qcs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n_qubits&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;qcs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;measure_all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;qasm_backend&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Aer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;get_backend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'qasm_simulator'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;out&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;execute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;qcs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;qasm_backend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shots&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8192&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;counts&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;get_counts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;fft&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;get_fft_from_counts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;counts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n_qubits&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:n_samples&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/2]
+
+
+plt.xlabel('sample_num')
+plt.ylabel('value')
+plt.plot(list(range(len(fft[:]))), fft[:])
+
+top_indices = np.argsort(-np.array(fft))
+freqs = top_indices*frame_rate/n&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_samples&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# get top 5 detected frequencies&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;freqs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Prints&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;875&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;937.5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;812.5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;750&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;687.5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/f_32.png&quot; alt=&quot;f32&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The plot makes sense with one strong peak. Alright lets get real and try it on real hardware.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;provider&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;IBMQ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;get_provider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hub&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'ibm-q'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;least_busy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;provider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;backends&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filters&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;lambda&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;x: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;configuration&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;n_qubits&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n_qubits&lt;/span&gt;
+                                       &lt;span class=&quot;n&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;configuration&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;simulator&lt;/span&gt;
+                                       &lt;span class=&quot;n&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;operational&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;least busy backend: &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;least&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;busy&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;backend:  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ibmqx2&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;out&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;execute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;qcs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;qasm_backend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shots&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8192&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;You can see the results of your experiments in the IBM Q Experience portal. For this particular experiment, it showed me this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/ibmq_32_histogram.png&quot; alt=&quot;ibmq_32&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Which is gibberish, we ideally should get one single peak. So something’s clearly wrong.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Result: Failure&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;trial-3&quot;&gt;Trial 3&lt;/h2&gt;
+
+&lt;p&gt;I thought maybe there is something wrong in the way the state is prepared from the audio file. This was supported by the fact that more than half of the gates in the circuit were actually used for state preparation.&lt;/p&gt;
+
+&lt;p&gt;I reduced the number of qubits to 4, and created a dummy state comprising of basis states with linearly increasing amplitudes.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;n_qubits&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;dummy_state&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n_qubits&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dummy_state&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;11&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;12&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;13&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;14&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;15&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;qcs&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;prepare_circuit_from_samples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dummy_state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n_qubits&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;normalize&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;qcs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;measure_all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The circuit as visualized on IBM Q portal:&lt;/p&gt;
+
+&lt;figure align=&quot;center&quot; class=&quot;image&quot;&gt;
+  &lt;img src=&quot;/assets/circuit_4_1.png&quot; alt=&quot;&quot; width=&quot;900&quot; height=&quot;300&quot; /&gt;
+  &lt;figcaption align=&quot;center&quot; style=&quot;font-size:20px&quot;&gt;&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;figure align=&quot;center&quot; class=&quot;image&quot;&gt;
+  &lt;img src=&quot;/assets/circuit_4_2.png&quot; alt=&quot;&quot; width=&quot;900&quot; height=&quot;300&quot; /&gt;
+  &lt;figcaption align=&quot;center&quot; style=&quot;font-size:20px&quot;&gt;&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;p&gt;After running on a simulator, the results look like :&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/f_16.png&quot; alt=&quot;f_16&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Which looks good as expected.&lt;/p&gt;
+
+&lt;p&gt;After running it on real hardware:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/ibmq_16_dummy_histogram.png&quot; alt=&quot;ibmq_16_dummy_histogram.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Its noisy again! borderline gibberish. Ideally the amplitudes should go up linearly. But at least the problem has been isolated.&lt;/p&gt;
+
+&lt;p&gt;Lets try the same dummy state preparation with 3 qubits.&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;n_qubits&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;dummy_state&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n_qubits&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dummy_state&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;qcs&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;prepare_circuit_from_samples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dummy_state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n_qubits&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;normalize&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;qcs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;measure_all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The circuit as visualized on IBM Q portal:&lt;/p&gt;
+
+&lt;figure align=&quot;center&quot; class=&quot;image&quot;&gt;
+  &lt;img src=&quot;/assets/circuit_3.png&quot; alt=&quot;&quot; width=&quot;900&quot; height=&quot;300&quot; /&gt;
+  &lt;figcaption align=&quot;center&quot; style=&quot;font-size:20px&quot;&gt;&lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;p&gt;After running on a simulator, the results look like :&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/f_8.png&quot; alt=&quot;f_16&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Which looks good as expected.&lt;/p&gt;
+
+&lt;p&gt;After running it on real hardware:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/ibmq_8_dummy_histogram.png&quot; alt=&quot;ibmq_8_dummy_histogram.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now we are talking! This looks much more acceptable than previous experiments. Which sadly means that we will have to restrict ourselves a a meagre 3 qubits, which is only 8 samples. Lets see what we can do with it.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Result: almost Success&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;trial-4&quot;&gt;Trial 4&lt;/h2&gt;
+
+&lt;p&gt;Running the entire circuit, with a sampling rate of \(2000\), and only 3 qubits&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;n_qubits&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;n_samples&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n_qubits&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;audio&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;AudioSegment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;from_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'900hz.wav'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;audio&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;audio&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;set_frame_rate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;frame_rate&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;audio&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;frame_rate&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#2000&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;samples&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;audio&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;get_array_of_samples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:n_samples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;qcs&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;prepare_circuit_from_samples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;samples&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n_qubits&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;qft&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;qcs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n_qubits&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;qcs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;measure_all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;provider&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;IBMQ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;get_provider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hub&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'ibm-q'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;least_busy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;provider&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;backends&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filters&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;lambda&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;x: &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;configuration&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;n_qubits&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n_qubits&lt;/span&gt;
+                                       &lt;span class=&quot;n&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;configuration&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;simulator&lt;/span&gt;
+                                       &lt;span class=&quot;n&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;operational&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;least busy backend: &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;backend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;least&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;busy&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;backend:  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ibmqx2&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;out&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;execute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;qcs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;qasm_backend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shots&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8192&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;The result looks like:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/ibmq_8_histogram.png&quot; alt=&quot;ibmq_8_histogram.png&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Nice! we see a clear peak. The peak seems to be at \(100\) which is \(4\). To get the associated frequency :&lt;/p&gt;
+
+\[\delta f = \frac{2000}{8} = 250Hz\]
+
+\[F = 4 * \frac{sampling\_rate}{n\_samples} = 4 * \frac{2000}{8} \pm \delta f\]
+
+\[= 1000 \pm 250Hz\]
+
+&lt;p&gt;Nice!&lt;/p&gt;
+
+&lt;h3 id=&quot;result-success-&quot;&gt;Result: Success! (?)&lt;/h3&gt;
+
+&lt;h2 id=&quot;i-gotta-say&quot;&gt;I gotta say..&lt;/h2&gt;
+
+&lt;p&gt;This work is more like a proof of concept. It may not look like much for now but as we move towards fault tolerant, less error prone quantum hardware, our capacities would increase exponentially.&lt;/p&gt;
+
+&lt;p&gt;There could be a lot of ways in which this work can be improved even with the current hardware. For starters:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;No error correction was used.&lt;/li&gt;
+  &lt;li&gt;Approximate quantum fourier transform could’ve been used, where we get rid of small angle rotations to minimize the number of gates.&lt;/li&gt;
+  &lt;li&gt;State preparation routine could be made approximate to further minimize number of gates.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3 id=&quot;references&quot;&gt;References:&lt;/h3&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/sarangzambare/quantum_frequency_detector&quot;&gt;Code for this project&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.bcg.com/publications/2019/quantum-computers-create-value-when.aspx&quot;&gt;BCG Article talking about impact of quantum computers&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://arxiv.org/abs/1801.00862&quot;&gt;What is NISQ Era quantum hardware?&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://arxiv.org/abs/1003.5760&quot;&gt;“Quantum State Preparation with Universal Gate Decompositions”&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://arxiv.org/abs/quant-ph/0504100&quot;&gt;“Decompositions of general quantum gates”&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://arxiv.org/abs/1803.04933&quot;&gt;“Approximate Quantum Fourier Transform”&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://algassert.com/quirk&quot;&gt;“Quirk quantum circuit visualizer”&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;</content><author><name></name></author><summary type="html">Read this: article by BCG talking about the economic impact of quantum computing in the NISQ era and beyond - which estimates the economic impact of quantum computing in the next 5 years to be in billions of dollars.</summary></entry></feed>
