@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Quantum Computing to find frequencies in an audio file"
-description: "Because why not"
+description: "Because why not..."
 date:   2020-06-13 15:15:52 -0400
 categories: jekyll update
 ---
@@ -21,6 +21,11 @@ All code can be found at this [repository][main_code]
 
 First things first - what am I trying here ? - basically I am trying to build a frequency detector on a quantum computer, audio file goes in and most dominant frequencies come out, thats it. (some might ask - aren't you making a glorified version of a quantum version of discrete fourier transform ? -> well yeh but sshhh!). I plan to start with simple audio signal of a pure sine wave. If things work out I may try to record a note played on a guitar.
 
+## Why should I care ?
+Apart from having the potential to crack your facebook/instagram/bank account passwords, QFT or Fourier transform is one of the central tools in mathematics and is used almost in every piece of tech that you see around you in some way.
+The difference between Quantum Fourier Transform and classical Fast Fourier transform is in the speed and in the way the data is represented physically. Classically, a dimension $$n$$ vector would need $$n$$ floating point numbers. On a quantum computer, the QFT operates on the wave function needing only $$log_{2}(n)$$ qubits, exponentially saving space. The best classical FFT runs in time $$O(n log(n))$$ and the QFT runs in time $$O(log(n)^{2})$$ where again $$n$$ is the dimension of the vector. Also the classical FFT must take time $$O(n)$$ to even read the input!
+
+The vanilla QFT algorithm takes $$O(n^{2})$$ quantum gates, but there are very efficient approximate versions which need only $$O(n log(n))$$ gates possibly giving more speedup.
 
 ## 1. Quantum Fourier Transform
 

@@ -11,15 +11,15 @@
 <meta name="generator" content="Jekyll v3.8.7" />
 <meta property="og:title" content="Quantum Computing to find frequencies in an audio file" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Because why not" />
-<meta property="og:description" content="Because why not" />
+<meta name="description" content="Because why not…" />
+<meta property="og:description" content="Because why not…" />
 <link rel="canonical" href="http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies.html" />
 <meta property="og:url" content="http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies.html" />
 <meta property="og:site_name" content="Your awesome title" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-06-13T15:15:52-04:00" />
 <script type="application/ld+json">
-{"headline":"Quantum Computing to find frequencies in an audio file","dateModified":"2020-06-13T15:15:52-04:00","datePublished":"2020-06-13T15:15:52-04:00","url":"http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies.html","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies.html"},"description":"Because why not","@type":"BlogPosting","@context":"https://schema.org"}</script>
+{"headline":"Quantum Computing to find frequencies in an audio file","dateModified":"2020-06-13T15:15:52-04:00","datePublished":"2020-06-13T15:15:52-04:00","url":"http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies.html","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies.html"},"description":"Because why not…","@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 </head>
 <body>
@@ -28,7 +28,7 @@
 	<img src="/assets/rsz_science_bitch.png" style="float: left;" />
 	<h1>Quantum Computing to find frequencies in an audio file</h1>
 
-	<h4 class="post-description">Because why not</h4>
+	<h4 class="post-description">Because why not...</h4>
 	<div class="post-date" style="margin-top:20px">
 		Published on Jun 13, 2020
 	</div>
@@ -49,6 +49,12 @@
 <h3 id="tldr---i-want-to-make-a-frequency-detector-using-a-quantum-computer">TLDR; - I want to make a frequency detector using a quantum computer</h3>
 
 <p>First things first - what am I trying here ? - basically I am trying to build a frequency detector on a quantum computer, audio file goes in and most dominant frequencies come out, thats it. (some might ask - aren’t you making a glorified version of a quantum version of discrete fourier transform ? -&gt; well yeh but sshhh!). I plan to start with simple audio signal of a pure sine wave. If things work out I may try to record a note played on a guitar.</p>
+
+<h2 id="why-should-i-care-">Why should I care ?</h2>
+<p>Apart from having the potential to crack your facebook/instagram/bank account passwords, QFT or Fourier transform is one of the central tools in mathematics and is used almost in every piece of tech that you see around you in some way.
+The difference between Quantum Fourier Transform and classical Fast Fourier transform is in the speed and in the way the data is represented physically. Classically, a dimension <script type="math/tex">n</script> vector would need <script type="math/tex">n</script> floating point numbers. On a quantum computer, the QFT operates on the wave function needing only <script type="math/tex">log_{2}(n)</script> qubits, exponentially saving space. The best classical FFT runs in time <script type="math/tex">O(n log(n))</script> and the QFT runs in time <script type="math/tex">O(log(n)^{2})</script> where again <script type="math/tex">n</script> is the dimension of the vector. Also the classical FFT must take time <script type="math/tex">O(n)</script> to even read the input!</p>
+
+<p>The vanilla QFT algorithm takes <script type="math/tex">O(n^{2})</script> quantum gates, but there are very efficient approximate versions which need only <script type="math/tex">O(n log(n))</script> gates possibly giving more speedup.</p>
 
 <h2 id="1-quantum-fourier-transform">1. Quantum Fourier Transform</h2>
 
