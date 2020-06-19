@@ -1,9 +1,11 @@
 @charset "UTF-8";
 @font-face { font-family: 'fontello'; src: url("../font/fontello.eot?26793073"); src: url("../font/fontello.eot?26793073#iefix") format("embedded-opentype"), url("../font/fontello.woff2?26793073") format("woff2"), url("../font/fontello.woff?26793073") format("woff"), url("../font/fontello.ttf?26793073") format("truetype"), url("../font/fontello.svg?26793073#fontello") format("svg"); font-weight: normal; font-style: normal; }
-
 /* Chrome hack: SVG is rendered more smooth in Windozze. 100% magic, uncomment if you need it. */
 /* Note, that will break hinting! In other OS-es font will be not as sharp as it could be */
-/* @media screen and (-webkit-min-device-pixel-ratio:0) { @font-face { font-family: 'fontello'; src: url('../font/fontello.svg?26793073#fontello') format('svg'); } } */
+/*
+@media screen and (-webkit-min-device-pixel-ratio:0) { @font-face { font-family: 'fontello'; src: url('../font/fontello.svg?26793073#fontello') format('svg'); }
+}
+*/
 [class^="icon-"]:before, [class*=" icon-"]:before { font-family: "fontello"; font-style: normal; font-weight: normal; speak: none; display: inline-block; text-decoration: inherit; width: 1em; margin-right: .2em; text-align: center; /* opacity: .8; */ /* For safety - reset parent styles, that can break glyph codes*/ font-variant: normal; text-transform: none; /* fix buttons height, for twitter bootstrap */ line-height: 1em; /* Animation center compensation - margins should be symmetric */ /* remove if not needed */ margin-left: .2em; /* you can be more comfortable with increased icons size */ /* font-size: 120%; */ /* Font smoothing. That was taken from TWBS */ -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; /* Uncomment for 3D effect */ /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */ }
 
 .icon-calendar:before { content: '\e800'; }
@@ -334,131 +336,96 @@ pre.highlight, code { font-family: 'Consolas', Menlo, monospace; line-height: 1.
 *, *:before, *:after { box-sizing: border-box; }
 
 body { font-family: 'Nunito Sans', sans-serif; font-size: 16px; line-height: 1.55em; margin: 0; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-
 @media screen and (min-width: 320px) { body { font-size: calc(16px + 3 * ((100vw - 320px) / 960)); } }
-
 @media screen and (min-width: 1280px) { body { font-size: 19px; } }
 
 a { color: #268bd2; text-decoration: none; transition: border-bottom 0.4s; }
-
 a:hover { border-bottom: 0.5px solid #268bd2; }
 
 h1, h2, h3 { line-height: 1.2em; }
 
 h1 { font-size: 36px; }
-
 @media screen and (min-width: 320px) { h1 { font-size: calc(36px + 12 * ((100vw - 320px) / 960)); } }
-
 @media screen and (min-width: 1280px) { h1 { font-size: 48px; } }
 
 h2 { font-weight: bold; font-size: 28px; }
-
 @media screen and (min-width: 320px) { h2 { font-size: calc(28px + 4 * ((100vw - 320px) / 960)); } }
-
 @media screen and (min-width: 1280px) { h2 { font-size: 32px; } }
 
 h4 { font-weight: normal; font-size: 18px; }
-
 @media screen and (min-width: 320px) { h4 { font-size: calc(18px + 2 * ((100vw - 320px) / 960)); } }
-
 @media screen and (min-width: 1280px) { h4 { font-size: 20px; } }
 
 figcaption { font-size: 10pt; line-height: 1.5em; margin-top: -1em; }
 
 header { padding: 120px 0; color: #fff; overflow: hidden; }
-
 header h2 { font-weight: normal; margin-top: 5px; }
-
 header h1 { margin: 0; }
-
 header .social { overflow: hidden; list-style-type: none; padding: 0; margin-top: 0; }
-
 header .social li { color: #fff; float: left; }
-
 header .social li i { font-size: 26px; transition: color .3s; }
-
 header .social li i:first-child::before { margin-left: 0; }
-
 @media screen and (min-width: 320px) { header .social li i { font-size: calc(26px + 8 * ((100vw - 320px) / 960)); } }
-
 @media screen and (min-width: 1280px) { header .social li i { font-size: 34px; } }
-
 header .social li i:hover { color: #999; }
 
 .clearfix { clear: both; }
 
 .container { margin: 0 150px; max-width: 720px; }
-
 .container div.highlighter-rouge { right: 150px; }
-
-@media screen and (max-width: 540px) { .container { margin: 0 15px; } .container div.highlighter-rouge { right: 15px; } .container div.highlight { padding: 30px 15px; } }
-
-@media screen and (max-width: 768px) and (min-width: 540px) { .container { margin: 0 40px; } .container div.highlighter-rouge { right: 40px; } .container div.highlight { padding: 30px 40px; } }
-
-@media screen and (max-width: 1024px) and (min-width: 768px) { .container { margin: 0 80px; } .container div.highlighter-rouge { right: 80px; } .container div.highlight { padding: 30px 80px; } }
-
-@media screen and (min-width: 1024px) and (max-width: 1280px) { .container { margin: 0 100px; } .container div.highlighter-rouge { right: 100px; } .container div.highlight { padding: 30px 100px; } }
+@media screen and (max-width: 540px) { .container { margin: 0 15px; }
+  .container div.highlighter-rouge { right: 15px; }
+  .container div.highlight { padding: 30px 15px; } }
+@media screen and (max-width: 768px) and (min-width: 540px) { .container { margin: 0 40px; }
+  .container div.highlighter-rouge { right: 40px; }
+  .container div.highlight { padding: 30px 40px; } }
+@media screen and (max-width: 1024px) and (min-width: 768px) { .container { margin: 0 80px; }
+  .container div.highlighter-rouge { right: 80px; }
+  .container div.highlight { padding: 30px 80px; } }
+@media screen and (min-width: 1024px) and (max-width: 1280px) { .container { margin: 0 100px; }
+  .container div.highlighter-rouge { right: 100px; }
+  .container div.highlight { padding: 30px 100px; } }
 
 .post-title { color: #222; transition: color .3s ease; margin: .1em 0; }
-
 .post-title:hover { color: #999; border-bottom: 0; }
 
 .post-description { font-weight: normal; color: #ddd; margin-top: .5em; margin-bottom: 1.3em; }
 
 .post-date { color: #999; }
-
 .post-date .icon-calendar { margin-right: 6px; }
 
 .post-tags { list-style-type: none; padding: 0; }
-
 .post-tags li { float: left; padding: 10px 20px; background-color: #eee; color: #000; margin: 5px; border-radius: 2px; font-size: 15px; }
-
 @media screen and (min-width: 320px) { .post-tags li { font-size: calc(15px + 2 * ((100vw - 320px) / 960)); } }
-
 @media screen and (min-width: 1280px) { .post-tags li { font-size: 17px; } }
-
 .post-tags li:first-child { margin-left: 0; }
 
 .posts { list-style-type: none; padding: 0; }
-
 .posts > li { margin-bottom: 30px; padding-bottom: 20px; }
-
 .posts > li:not(:last-child) { border-bottom: 1px solid #eee; }
 
 .posts, .post-container { margin-top: 40px; }
 
 .post-meta { display: flex; justify-content: space-between; align-items: center; }
-
 .post-meta a:hover { border-bottom: none; }
 
 .post-container img { margin: 20px 0; }
 
 .navbar { position: absolute; top: 0; right: 5vw; }
-
 .navbar a { color: inherit; }
-
 .navbar ul { list-style-type: none; }
-
 .navbar ul li { border: 1px solid #fff; float: left; padding: 10px 25px; font-size: 15px; transition: background-color .3s ease-in; }
-
 .navbar ul li:not(:first-child) { border-left: 0; }
-
 @media screen and (min-width: 320px) { .navbar ul li { font-size: calc(15px + 2 * ((100vw - 320px) / 960)); } }
-
 @media screen and (min-width: 1280px) { .navbar ul li { font-size: 17px; } }
-
 .navbar ul li:hover { background-color: rgba(255, 255, 255, 0.15); cursor: pointer; }
 
 .texture-black { background-image: url("/assets/textures/black.jpg"); }
-
 .texture-black h2 { color: #999; }
 
 .texture-blue { background-image: url("/assets/textures/blue.jpg"); }
-
 .texture-blue h2 { color: #ddd; }
-
 .texture-blue .social i:hover { color: #eee; }
-
 .texture-blue .post-date { color: #ccc; }
 
 .texture-red { background-image: url("/assets/textures/red.jpg"); }
@@ -466,15 +433,9 @@ header .social li i:hover { color: #999; }
 .texture-purple { background-image: url("/assets/textures/purple.jpg"); }
 
 .texture-green { background-image: url("/assets/textures/green.jpg"); }
-
 .texture-green .post-date { color: #ccc; }
 
 .texture-red h2, .texture-purple h2 { color: #ccc; }
-
 .texture-red .social i, .texture-purple .social i { color: #ddd; }
-
 .texture-red .social i:hover, .texture-purple .social i:hover { color: #efefef; }
-
 .texture-red .post-date, .texture-purple .post-date { color: #ddd; }
-
-/*# sourceMappingURL=style.css.map */

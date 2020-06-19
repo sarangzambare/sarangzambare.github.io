@@ -8,7 +8,7 @@
 <title>Quantum Computing</title>
 <!-- Begin Jekyll SEO tag v2.6.1 -->
 <title>Quantum Computing | Your awesome title</title>
-<meta name="generator" content="Jekyll v4.1.0" />
+<meta name="generator" content="Jekyll v3.8.7" />
 <meta property="og:title" content="Quantum Computing" />
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="Read this: article by BCG talking about the economic impact of quantum computing in the NISQ era and beyond - which estimates the economic impact of quantum computing in the next 5 years to be in billions of dollars." />
@@ -19,7 +19,7 @@
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-06-13T15:15:52-04:00" />
 <script type="application/ld+json">
-{"url":"http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies.html","headline":"Quantum Computing","dateModified":"2020-06-13T15:15:52-04:00","datePublished":"2020-06-13T15:15:52-04:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies.html"},"description":"Read this: article by BCG talking about the economic impact of quantum computing in the NISQ era and beyond - which estimates the economic impact of quantum computing in the next 5 years to be in billions of dollars.","@type":"BlogPosting","@context":"https://schema.org"}</script>
+{"headline":"Quantum Computing","dateModified":"2020-06-13T15:15:52-04:00","datePublished":"2020-06-13T15:15:52-04:00","url":"http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies.html","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/jekyll/update/2020/06/13/quantum-frequencies.html"},"description":"Read this: article by BCG talking about the economic impact of quantum computing in the NISQ era and beyond - which estimates the economic impact of quantum computing in the next 5 years to be in billions of dollars.","@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 </head>
 <body>
@@ -52,29 +52,29 @@
 
 <p>QFT is the quantum version of the discrete fourier transform. In QFT we encode the input vector as a set of amplitudes of the basis states of the quantum system. Hence, the number of points we can operate over is restricted by the number of qubits available to us.</p>
 
-<p>The classical fourier transform acts on a vector \((x_{0}, x_{1},...,x_{N-1})\) and calculates \((y_{0}, y_{1},...,y_{N-1})\) where</p>
+<p>The classical fourier transform acts on a vector <script type="math/tex">(x_{0}, x_{1},...,x_{N-1})</script> and calculates <script type="math/tex">(y_{0}, y_{1},...,y_{N-1})</script> where</p>
 
-\[\large y_{k} = \frac{1}{\sqrt{N}}\sum_{i=0}^{N-1}x_{i}\omega_{N}^{-ik}\]
+<script type="math/tex; mode=display">\large y_{k} = \frac{1}{\sqrt{N}}\sum_{i=0}^{N-1}x_{i}\omega_{N}^{-ik}</script>
 
-<p>where \(\omega_{N}=e^{\frac{2\pi i}{N}}\)</p>
+<p>where <script type="math/tex">\omega_{N}=e^{\frac{2\pi i}{N}}</script></p>
 
 <p>The quantum fourier transform does something similar. It acts on a quantum state</p>
 
-\[\large |x\rangle = \sum_{i=0}^{N-1}x_{i}|i\rangle\]
+<script type="math/tex; mode=display">\large |x\rangle = \sum_{i=0}^{N-1}x_{i}|i\rangle</script>
 
 <p>and maps it to a quantum state</p>
 
-\[\large |y\rangle =\sum_{i=0}^{N-1}y_{i}|i\rangle\]
+<script type="math/tex; mode=display">\large |y\rangle =\sum_{i=0}^{N-1}y_{i}|i\rangle</script>
 
 <p>according to the equation:</p>
 
-\[\large y_{k} = \frac{1}{\sqrt{N}}\sum_{i=0}^{N-1}x_{i}\omega_{N}^{ik},\;\;\;\;\; k = 0,1,2,...,  N-1\]
+<script type="math/tex; mode=display">\large y_{k} = \frac{1}{\sqrt{N}}\sum_{i=0}^{N-1}x_{i}\omega_{N}^{ik},\;\;\;\;\; k = 0,1,2,...,  N-1</script>
 
 <p>I am using the convention which makes the QFT have the same effect as the <strong>inverse</strong> discrete fourier transform. Depending on the implementation of the circuit this convention can change.</p>
 
 <p>If we deal with basis states then QFT can also be expressed as a map:</p>
 
-\[\large QFT |x\rangle = \frac{1}{\sqrt{N}}\sum_{k=0}^{N-1}\omega_{N}^{xk}|k\rangle,\;\;\;\;\; k = 0,1,2,...,  N-1\]
+<script type="math/tex; mode=display">\large QFT |x\rangle = \frac{1}{\sqrt{N}}\sum_{k=0}^{N-1}\omega_{N}^{xk}|k\rangle,\;\;\;\;\; k = 0,1,2,...,  N-1</script>
 
 <p>If you are the sort of person who better understands stuff in terms of unitaries, the equivalent unitary for QFT is</p>
 
@@ -91,62 +91,62 @@
 
 <p>The quantum processors that we currently have encode operations in quantum gates. The next few lines rewrite the QFT equation into a form which can be implemented as a quantum circuit using the commonly available quantum gates. You can skip this if you want.</p>
 
-\[\large  QFT |x\rangle = \frac{1}{\sqrt{N}}\sum_{k=0}^{2^{n}-1}\omega_{N}^{xk}|k\rangle = \frac{1}{\sqrt{N}}\sum_{k_{1}\in \{0,1\}}\sum_{k_{2}\in \{0,1\}}\sum_{k_{3}\in \{0,1\}}\text{...}\sum_{k_{n}\in \{0,1\}}\omega_{N}^{x\sum_{j=1}^{n}k_{j}2^{n-j}}|k_{1}k_{2}k_{3}...k_{n}\rangle\]
+<script type="math/tex; mode=display">\large  QFT |x\rangle = \frac{1}{\sqrt{N}}\sum_{k=0}^{2^{n}-1}\omega_{N}^{xk}|k\rangle = \frac{1}{\sqrt{N}}\sum_{k_{1}\in \{0,1\}}\sum_{k_{2}\in \{0,1\}}\sum_{k_{3}\in \{0,1\}}\text{...}\sum_{k_{n}\in \{0,1\}}\omega_{N}^{x\sum_{j=1}^{n}k_{j}2^{n-j}}|k_{1}k_{2}k_{3}...k_{n}\rangle</script>
 
 <h3 id="12-digression">1.2 Digression</h3>
 <p>To understand the above equation it would help to expand it using a small n. For example for a 2 qubit system, the basis states are</p>
 
-\[\large |00\rangle, |01\rangle, |10\rangle, |11\rangle\]
+<script type="math/tex; mode=display">\large |00\rangle, |01\rangle, |10\rangle, |11\rangle</script>
 
-\[\large QFT |x\rangle = \frac{1}{\sqrt{4}}\sum_{k_{1}\in\{0,1\}}\sum_{k_{2}\in\{0,1\}}\omega_{4}^{x\sum_{j=1}^{2}k_{j}2^{2-j}}|k_{1},k_{2}\rangle\]
+<script type="math/tex; mode=display">\large QFT |x\rangle = \frac{1}{\sqrt{4}}\sum_{k_{1}\in\{0,1\}}\sum_{k_{2}\in\{0,1\}}\omega_{4}^{x\sum_{j=1}^{2}k_{j}2^{2-j}}|k_{1},k_{2}\rangle</script>
 
 <h3 id="13-moving-on">1.3 Moving on</h3>
 
 <p>Hence,</p>
 
-\[\large QFT|x\rangle = \frac{1}{\sqrt{N}}\sum_{k_{1}\in \{0,1\}}\sum_{k_{2}\in \{0,1\}}\sum_{k_{3}\in \{0,1\}}\text{...}\sum_{k_{n}\in \{0,1\}} \bigotimes_{j=1}^{n}\omega_{N}^{xk_{j}2^{n-j}}|k_{j}\rangle\]
+<script type="math/tex; mode=display">\large QFT|x\rangle = \frac{1}{\sqrt{N}}\sum_{k_{1}\in \{0,1\}}\sum_{k_{2}\in \{0,1\}}\sum_{k_{3}\in \{0,1\}}\text{...}\sum_{k_{n}\in \{0,1\}} \bigotimes_{j=1}^{n}\omega_{N}^{xk_{j}2^{n-j}}|k_{j}\rangle</script>
 
-\[\large = \frac{1}{\sqrt{N}}\sum_{k_{1}\in \{0,1\}}\sum_{k_{2}\in \{0,1\}}\sum_{k_{3}\in \{0,1\}}\text{...}\sum_{k_{n}\in \{0,1\}}\omega_{N}^{xk_{1}2^{n-1}}|k_{1}\rangle\otimes \bigotimes_{j=2}^{n}\omega_{N}^{xk_{j}2^{n-j}}|k_{j}\rangle\]
+<script type="math/tex; mode=display">\large = \frac{1}{\sqrt{N}}\sum_{k_{1}\in \{0,1\}}\sum_{k_{2}\in \{0,1\}}\sum_{k_{3}\in \{0,1\}}\text{...}\sum_{k_{n}\in \{0,1\}}\omega_{N}^{xk_{1}2^{n-1}}|k_{1}\rangle\otimes \bigotimes_{j=2}^{n}\omega_{N}^{xk_{j}2^{n-j}}|k_{j}\rangle</script>
 
-\[\large = \frac{1}{\sqrt{N}}\left(\sum_{k_{1}\in\{0,1\}}\omega_{N}^{xk_{1}2^{n-1}}|k_1\rangle\right)\otimes\left(\sum_{k_{2}\in\{0,1\}}\omega_{N}^{xk_{2}2^{n-2}}|k_2\rangle\right)\otimes\sum_{k_{3}\in \{0,1\}}\text{...}\sum_{k_{n}\in \{0,1\}}\omega_{N}^{xk_{3}2^{n-3}}|k_3\rangle\otimes\bigotimes_{j=3}^{n}\omega_{N}^{xk_{j}2^{n-j}}|k_{j}\rangle\]
+<script type="math/tex; mode=display">\large = \frac{1}{\sqrt{N}}\left(\sum_{k_{1}\in\{0,1\}}\omega_{N}^{xk_{1}2^{n-1}}|k_1\rangle\right)\otimes\left(\sum_{k_{2}\in\{0,1\}}\omega_{N}^{xk_{2}2^{n-2}}|k_2\rangle\right)\otimes\sum_{k_{3}\in \{0,1\}}\text{...}\sum_{k_{n}\in \{0,1\}}\omega_{N}^{xk_{3}2^{n-3}}|k_3\rangle\otimes\bigotimes_{j=3}^{n}\omega_{N}^{xk_{j}2^{n-j}}|k_{j}\rangle</script>
 
-\[\large = \frac{1}{\sqrt{N}}\left(\sum_{k_{1}\in\{0,1\}}\omega_{N}^{xk_{1}2^{n-1}}|k_1\rangle\right)\otimes\left(\sum_{k_{2}\in\{0,1\}}\omega_{N}^{xk_{2}2^{n-2}}|k_2\rangle\right)\otimes\left(\sum_{k_{3}\in\{0,1\}}\omega_{N}^{xk_{3}2^{n-3}}|k_3\rangle\right)\otimes\sum_{k_{4}\in \{0,1\}}\text{...}\sum_{k_{n}\in \{0,1\}}\omega_{N}^{xk_{4}2^{n-4}}|k_4\rangle\otimes\bigotimes_{j=4}^{n}\omega_{N}^{xk_{j}2^{n-j}}|k_{j}\rangle\]
+<script type="math/tex; mode=display">\large = \frac{1}{\sqrt{N}}\left(\sum_{k_{1}\in\{0,1\}}\omega_{N}^{xk_{1}2^{n-1}}|k_1\rangle\right)\otimes\left(\sum_{k_{2}\in\{0,1\}}\omega_{N}^{xk_{2}2^{n-2}}|k_2\rangle\right)\otimes\left(\sum_{k_{3}\in\{0,1\}}\omega_{N}^{xk_{3}2^{n-3}}|k_3\rangle\right)\otimes\sum_{k_{4}\in \{0,1\}}\text{...}\sum_{k_{n}\in \{0,1\}}\omega_{N}^{xk_{4}2^{n-4}}|k_4\rangle\otimes\bigotimes_{j=4}^{n}\omega_{N}^{xk_{j}2^{n-j}}|k_{j}\rangle</script>
 
 <p>Hence, the original QFT equation can be rewritten in terms of individual qubits as :</p>
 
-\[\large = \frac{1}{\sqrt{N}}\bigotimes_{j=1}^{n}\sum_{k_{j}\in\{0,1\}}\omega_{N}^{xk_{j}2^{n-j}}|k_j\rangle = \frac{1}{\sqrt{N}}\bigotimes_{j=1}^{n}\left(|0\rangle + \omega_{N}^{x2^{n-j}}|1\rangle\right)\]
+<script type="math/tex; mode=display">\large = \frac{1}{\sqrt{N}}\bigotimes_{j=1}^{n}\sum_{k_{j}\in\{0,1\}}\omega_{N}^{xk_{j}2^{n-j}}|k_j\rangle = \frac{1}{\sqrt{N}}\bigotimes_{j=1}^{n}\left(|0\rangle + \omega_{N}^{x2^{n-j}}|1\rangle\right)</script>
 
 <p>Now,</p>
 
-\[\Large \omega_{N}^{x2^{n-j}} = e^{\frac{2\pi i}{2^{n}}x2^{n-j}} = e^{2\pi i(x2^{-j})}\]
+<script type="math/tex; mode=display">\Large \omega_{N}^{x2^{n-j}} = e^{\frac{2\pi i}{2^{n}}x2^{n-j}} = e^{2\pi i(x2^{-j})}</script>
 
 <p>The exponent can be further simplified as:</p>
 
-\[\large x2^{-j} = \sum_{r=1}^{n-j}x_{r}2^{n-j-r} + \sum_{r=n-j+1}^{n}x_{r}2^{n-j-r}\]
+<script type="math/tex; mode=display">\large x2^{-j} = \sum_{r=1}^{n-j}x_{r}2^{n-j-r} + \sum_{r=n-j+1}^{n}x_{r}2^{n-j-r}</script>
 
-\[\large = a(j) + b(j)\]
+<script type="math/tex; mode=display">\large = a(j) + b(j)</script>
 
-<p>where \(x_{r}\) are the binary components of \(x\)</p>
+<p>where <script type="math/tex">x_{r}</script> are the binary components of <script type="math/tex">x</script></p>
 
-<p>Notice that \(a(j)\) above is always a whole number, and</p>
+<p>Notice that <script type="math/tex">a(j)</script> above is always a whole number, and</p>
 
-\[\large b(j) = 0.x_{n-j+1}x_{n-j+2}...x_{n}\]
+<script type="math/tex; mode=display">\large b(j) = 0.x_{n-j+1}x_{n-j+2}...x_{n}</script>
 
 <p>where the fractional binary notation as below is used:</p>
 
-\[\large [0.x_{1}x_{2}...x_{m}] = \sum_{k=1}^{m}x_{k}2^{-k}\]
+<script type="math/tex; mode=display">\large [0.x_{1}x_{2}...x_{m}] = \sum_{k=1}^{m}x_{k}2^{-k}</script>
 
 <p>Hence,</p>
 
-\[\Large \omega_{N}^{x2^{n-j}} = e^{2\pi ia(j)}.e^{2\pi ib(j)} = e^{2\pi i[0.x_{n-j+1}x_{n-j+2}...x_{n}]}\]
+<script type="math/tex; mode=display">\Large \omega_{N}^{x2^{n-j}} = e^{2\pi ia(j)}.e^{2\pi ib(j)} = e^{2\pi i[0.x_{n-j+1}x_{n-j+2}...x_{n}]}</script>
 
 <p>Finally we can write:</p>
 
-\[\large  QFT|x_{1}x_{2}...x_{n}\rangle = \frac{1}{\sqrt{N}}\bigotimes_{j=1}^{n}(|0\rangle + e^{2\pi i[0.x_{n-j+1}x_{n-j+2}...x_{n}]}|1\rangle)\]
+<script type="math/tex; mode=display">\large  QFT|x_{1}x_{2}...x_{n}\rangle = \frac{1}{\sqrt{N}}\bigotimes_{j=1}^{n}(|0\rangle + e^{2\pi i[0.x_{n-j+1}x_{n-j+2}...x_{n}]}|1\rangle)</script>
 
-\[\large = \frac{1}{\sqrt{N}}\left(|0\rangle + e^{2\pi i[0.x_{n}]}|1\rangle\right) \otimes \left(|0\rangle + e^{2\pi i[0.x_{n-1}x_{n}]}|1\rangle\right) \otimes ... \otimes \left(|0\rangle + e^{2\pi i[0.x_{1}x_{2}...x_{n}]}|1\rangle\right)\]
+<script type="math/tex; mode=display">\large = \frac{1}{\sqrt{N}}\left(|0\rangle + e^{2\pi i[0.x_{n}]}|1\rangle\right) \otimes \left(|0\rangle + e^{2\pi i[0.x_{n-1}x_{n}]}|1\rangle\right) \otimes ... \otimes \left(|0\rangle + e^{2\pi i[0.x_{1}x_{2}...x_{n}]}|1\rangle\right)</script>
 
-<p>Now that we have the QFT formula as a tensor product of each individual qubit, it would be easier to see what gates would get us the superposition in the above equation. The QFT circuit mainly makes use of two gates - Hadamard gate (H) and a parametric controlled phase gate \(R_{m}\).</p>
+<p>Now that we have the QFT formula as a tensor product of each individual qubit, it would be easier to see what gates would get us the superposition in the above equation. The QFT circuit mainly makes use of two gates - Hadamard gate (H) and a parametric controlled phase gate <script type="math/tex">R_{m}</script>.</p>
 
 <ol>
   <li><strong>Hadamard Gate (H)</strong></li>
@@ -156,13 +156,13 @@
 
 <p>The Hadamard gate is the most commonly used gate to put a pure qubit into a superposition state. It coverts qubits from the Pauli-Z basis to the Pauli-X basis. Its action is given as follows:</p>
 
-\[\large H|0\rangle = \frac{|0\rangle + |1\rangle}{\sqrt{2}} = |+\rangle\]
+<script type="math/tex; mode=display">\large H|0\rangle = \frac{|0\rangle + |1\rangle}{\sqrt{2}} = |+\rangle</script>
 
-\[\large H|1\rangle = \frac{|0\rangle - |1\rangle}{\sqrt{2}} = |-\rangle\]
+<script type="math/tex; mode=display">\large H|1\rangle = \frac{|0\rangle - |1\rangle}{\sqrt{2}} = |-\rangle</script>
 
 <p>and in general:</p>
 
-\[\large H|x\rangle = \frac{|0\rangle + e^{\frac{2\pi ix}{2}}|1\rangle}{\sqrt{2}}\]
+<script type="math/tex; mode=display">\large H|x\rangle = \frac{|0\rangle + e^{\frac{2\pi ix}{2}}|1\rangle}{\sqrt{2}}</script>
 
 <ol>
   <li><strong>Controlled Phase Gate</strong></li>
@@ -172,9 +172,9 @@
 
 <p>This is a two qubit controlled gate assuming that the control qubit is the most significant qubit, the action of this gate can be expressed as:</p>
 
-\[\large R_{\theta}|0x\rangle = |0x\rangle\]
+<script type="math/tex; mode=display">\large R_{\theta}|0x\rangle = |0x\rangle</script>
 
-\[\large R_{\theta}|1x\rangle = e^{\frac{2\pi i}{2^{\theta}}}|1x\rangle\]
+<script type="math/tex; mode=display">\large R_{\theta}|1x\rangle = e^{\frac{2\pi i}{2^{\theta}}}|1x\rangle</script>
 
 <p>Using these two gates, and the equation derived for QFT, we can construct the full circuit to get us the desired superposition like so</p>
 
@@ -229,13 +229,13 @@ def qft(circuit, n):
   <figcaption align="center" style="font-size:20px">3-qubit samples</figcaption>
 </figure>
 
-\[\large |\psi_{audio}\rangle = c_{0}|000\rangle + c_{1}|001\rangle + c_{2}|010\rangle + c_{3}|011\rangle + c_{4}|100\rangle + c_{5}|101\rangle + c_{6}|110\rangle + c_{7}|111\rangle\]
+<script type="math/tex; mode=display">\large |\psi_{audio}\rangle = c_{0}|000\rangle + c_{1}|001\rangle + c_{2}|010\rangle + c_{3}|011\rangle + c_{4}|100\rangle + c_{5}|101\rangle + c_{6}|110\rangle + c_{7}|111\rangle</script>
 
-<p>For a 3 qubit system, we can afford \(2^{3}=8\) samples, which are denoted by the Cs in the above figure,</p>
+<p>For a 3 qubit system, we can afford <script type="math/tex">2^{3}=8</script> samples, which are denoted by the Cs in the above figure,</p>
 
-<p>Note that Since \(\psi_{audio}\) is a quantum state, we need</p>
+<p>Note that Since <script type="math/tex">\psi_{audio}</script> is a quantum state, we need</p>
 
-\[\large \langle\psi_{audio}|\psi_{audio}\rangle = \sum_{i=0}^{7}|c_{i}|^{2} = 1\]
+<script type="math/tex; mode=display">\large \langle\psi_{audio}|\psi_{audio}\rangle = \sum_{i=0}^{7}|c_{i}|^{2} = 1</script>
 
 <p>Therefore, the Cs we sample need to be normalised before we can make a quantum state out of them.</p>
 
@@ -245,25 +245,25 @@ def qft(circuit, n):
 
 <h3 id="31-schmidt-decomposition-theorem">3.1 Schmidt Decomposition Theorem</h3>
 
-<p>Any vector \(\psi \in \mathcal{H}_{1} \otimes \mathcal{H}_{2}\) can be expressed in the form</p>
+<p>Any vector <script type="math/tex">\psi \in \mathcal{H}_{1} \otimes \mathcal{H}_{2}</script> can be expressed in the form</p>
 
-\[\large \psi = \sum_{j}c_{j}|\epsilon_{j}\rangle|\eta_{j}\rangle\]
+<script type="math/tex; mode=display">\large \psi = \sum_{j}c_{j}|\epsilon_{j}\rangle|\eta_{j}\rangle</script>
 
-<p>for non-negative real \(c_{j}\) and orthonormal sets \(\epsilon_{j}\in \mathcal{H}_{1}\) and \(\eta_{j}\in \mathcal{H}_{2}\). There are density operators \(\rho_{1}\) on \(\mathcal{H}_{1}\) and \(\rho_{2}\) on \(\mathcal{H}_{2}\) such that :</p>
+<p>for non-negative real <script type="math/tex">c_{j}</script> and orthonormal sets <script type="math/tex">\epsilon_{j}\in \mathcal{H}_{1}</script> and <script type="math/tex">\eta_{j}\in \mathcal{H}_{2}</script>. There are density operators <script type="math/tex">\rho_{1}</script> on <script type="math/tex">\mathcal{H}_{1}</script> and <script type="math/tex">\rho_{2}</script> on <script type="math/tex">\mathcal{H}_{2}</script> such that :</p>
 
-\[\large \langle\psi|(A \otimes 1)|\psi \rangle = tr[A\rho_{1}]\]
+<script type="math/tex; mode=display">\large \langle\psi|(A \otimes 1)|\psi \rangle = tr[A\rho_{1}]</script>
 
-\[\large \langle\psi|(1 \otimes B)|\psi \rangle = tr[A\rho_{2}]\]
+<script type="math/tex; mode=display">\large \langle\psi|(1 \otimes B)|\psi \rangle = tr[A\rho_{2}]</script>
 
-<p>for all observables \(A\) and \(B\) on \(\mathcal{H}_{1}\) and \(\mathcal{H}_{2}\) respectively, and the \(\{\epsilon_{j}\}\) can be chosen to be the eigenvectors of \(\rho_{1}\) corresponding to the non-zero eigenvalues \(p_{j}\), the vectors \(\{\eta_{j}\}\), the corresponding eigenvectors for \(\rho_{2}\), and the positive scalars \(c_{j} = \sqrt{p_{j}}\)</p>
+<p>for all observables <script type="math/tex">A</script> and <script type="math/tex">B</script> on <script type="math/tex">\mathcal{H}_{1}</script> and <script type="math/tex">\mathcal{H}_{2}</script> respectively, and the <script type="math/tex">\{\epsilon_{j}\}</script> can be chosen to be the eigenvectors of <script type="math/tex">\rho_{1}</script> corresponding to the non-zero eigenvalues <script type="math/tex">p_{j}</script>, the vectors <script type="math/tex">\{\eta_{j}\}</script>, the corresponding eigenvectors for <script type="math/tex">\rho_{2}</script>, and the positive scalars <script type="math/tex">c_{j} = \sqrt{p_{j}}</script></p>
 
 <h3 id="32-state-preparation">3.2 State preparation</h3>
 
-<p>A general n-qubit state is fully described by \(2^{n+1} - 2\) real parameters. These parameters are introduced sequentially in the form of C-NOT gates and single qubit rotation unitaries U. For example ,we can look at the process for a 4 qubit system below. For the general case I’d refer you to the paper <a href="https://arxiv.org/abs/1003.5760">“Quantum State Preparation with Universal Gate Decompositions”</a></p>
+<p>A general n-qubit state is fully described by <script type="math/tex">2^{n+1} - 2</script> real parameters. These parameters are introduced sequentially in the form of C-NOT gates and single qubit rotation unitaries U. For example ,we can look at the process for a 4 qubit system below. For the general case I’d refer you to the paper <a href="https://arxiv.org/abs/1003.5760">“Quantum State Preparation with Universal Gate Decompositions”</a></p>
 
 <p>In the case of four qubits, the Hilbert space can be factorized into two parts each of two qubits. An arbitrary pure state of four qubits can then be represented using the standard Schmidt decomposition as</p>
 
-\[\large \psi = \sum_{i=1}^{4}\alpha_{i}|\psi\rangle_{i}|\phi\rangle_{i}\]
+<script type="math/tex; mode=display">\large \psi = \sum_{i=1}^{4}\alpha_{i}|\psi\rangle_{i}|\phi\rangle_{i}</script>
 
 <p>After that the entire process can be broken down into four phases.</p>
 
@@ -271,7 +271,7 @@ def qft(circuit, n):
 
 <p>Starting with the initial state of all zeros, we generate the state with generalized schmidt coefficients on the first two qubits:</p>
 
-\[\large |0000\rangle = (\alpha_{1}|00\rangle + \alpha_{2}|01\rangle + \alpha_{3}|10\rangle + \alpha_{4}|11\rangle)|00\rangle\]
+<script type="math/tex; mode=display">\large |0000\rangle = (\alpha_{1}|00\rangle + \alpha_{2}|01\rangle + \alpha_{3}|10\rangle + \alpha_{4}|11\rangle)|00\rangle</script>
 
 <p>This can be done using a single C-NOT gate and single qubit rotations. For more details about this step refer <a href="https://arxiv.org/abs/quant-ph/0504100">“Decompositions of general quantum gates”</a></p>
 
@@ -285,31 +285,31 @@ of the first two qubits onto the respective states of the second
 two qubits. In this way we obtain a state of four qubits, which
 has the same Schmidt decomposition coefficients as the target</p>
 
-\[\large (\alpha_{1}|00\rangle + \alpha_{2}|01\rangle + \alpha_{3}|10\rangle + \alpha_{4}|11\rangle)|00\rangle \rightarrow (\alpha_{1}|00\rangle|00\rangle + \alpha_{2}|01\rangle|01\rangle + \alpha_{3}|10\rangle|10\rangle + \alpha_{4}|11\rangle|11\rangle)\]
+<script type="math/tex; mode=display">\large (\alpha_{1}|00\rangle + \alpha_{2}|01\rangle + \alpha_{3}|10\rangle + \alpha_{4}|11\rangle)|00\rangle \rightarrow (\alpha_{1}|00\rangle|00\rangle + \alpha_{2}|01\rangle|01\rangle + \alpha_{3}|10\rangle|10\rangle + \alpha_{4}|11\rangle|11\rangle)</script>
 
 <h4 id="phase-3">Phase 3</h4>
 
 <p>Keeping the Schmidt decomposition form we apply the unitary operation that transforms the basis states of the first two qubits into the four states, we obtain:</p>
 
-\[\large |00\rangle \rightarrow |\psi\rangle_{1}\]
+<script type="math/tex; mode=display">\large |00\rangle \rightarrow |\psi\rangle_{1}</script>
 
-\[\large |01\rangle \rightarrow |\psi\rangle_{2}\]
+<script type="math/tex; mode=display">\large |01\rangle \rightarrow |\psi\rangle_{2}</script>
 
-\[\large |10\rangle \rightarrow |\psi\rangle_{3}\]
+<script type="math/tex; mode=display">\large |10\rangle \rightarrow |\psi\rangle_{3}</script>
 
-\[\large |11\rangle \rightarrow |\psi\rangle_{4}\]
+<script type="math/tex; mode=display">\large |11\rangle \rightarrow |\psi\rangle_{4}</script>
 
 <h4 id="phase-4">Phase 4</h4>
 
 <p>In the final phase of the circuit we perform a unitary operation on the third and fourth qubit in order to transform their computational basis states into the Schmidt basis states</p>
 
-\[\large |00\rangle \rightarrow |\phi\rangle_{1}\]
+<script type="math/tex; mode=display">\large |00\rangle \rightarrow |\phi\rangle_{1}</script>
 
-\[\large |01\rangle \rightarrow |\phi\rangle_{2}\]
+<script type="math/tex; mode=display">\large |01\rangle \rightarrow |\phi\rangle_{2}</script>
 
-\[\large |10\rangle \rightarrow |\phi\rangle_{3}\]
+<script type="math/tex; mode=display">\large |10\rangle \rightarrow |\phi\rangle_{3}</script>
 
-\[\large |11\rangle \rightarrow |\phi\rangle_{4}\]
+<script type="math/tex; mode=display">\large |11\rangle \rightarrow |\phi\rangle_{4}</script>
 
 <p>This completes the state preparation.</p>
 
@@ -359,7 +359,7 @@ has the same Schmidt decomposition coefficients as the target</p>
 
 <p>Qiskit provides many simulator backend options, here I am going to use the qasm simulator backend, which mimics the behaviour of a noise-free real backend.</p>
 
-<p>Since its a simulator, I am working with 16 qubits, which means I will be able to load in \(2^{16} = 65536\) samples of my audio file.</p>
+<p>Since its a simulator, I am working with 16 qubits, which means I will be able to load in <script type="math/tex">2^{16} = 65536</script> samples of my audio file.</p>
 
 <p>The entire circuit can be split into 4 parts -</p>
 
@@ -406,11 +406,11 @@ has the same Schmidt decomposition coefficients as the target</p>
 
 <p>If the final output of the state is given by :</p>
 
-\[\large |\psi\rangle = \sum_{i}c_{i}|i\rangle\]
+<script type="math/tex; mode=display">\large |\psi\rangle = \sum_{i}c_{i}|i\rangle</script>
 
-<p>where \(i\) are the basis states, then the information we need is in the \(c_{i}\)</p>
+<p>where <script type="math/tex">i</script> are the basis states, then the information we need is in the <script type="math/tex">c_{i}</script></p>
 
-<p>However since we can only observe the distribution of the final qubits, we can only measure \(\|c_{i}\|^{2}\)</p>
+<p>However since we can only observe the distribution of the final qubits, we can only measure <script type="math/tex">\|c_{i}\|^{2}</script></p>
 
 <p>To get this distribution we run the circuit many times, which is controlled by the <strong>shots</strong> parameter.</p>
 
@@ -423,7 +423,7 @@ plot_samples(fft[:2000])</span></code></pre></figure>
 
 <p><img src="/assets/f_space.png" alt="f-space" /></p>
 
-<p>We see a nice peak at about 1300. To get the value of frequency we have to multiply this peak by \(\frac{frame\_rate}{n\_samples}\). Note that we can only measure upto \(\frac{frame\_rate}{2}Hz\) - which is the <strong>Nyquist limit</strong>. If you don’t know what that means google is your friend.</p>
+<p>We see a nice peak at about 1300. To get the value of frequency we have to multiply this peak by <script type="math/tex">\frac{frame\_rate}{n\_samples}</script>. Note that we can only measure upto <script type="math/tex">\frac{frame\_rate}{2}Hz</script> - which is the <strong>Nyquist limit</strong>. If you don’t know what that means google is your friend.</p>
 
 <figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">top_indices</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">argsort</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="p">.</span><span class="nf">array</span><span class="p">(</span><span class="n">fft</span><span class="p">))</span>
 <span class="n">freqs</span> <span class="o">=</span> <span class="n">top_indices</span><span class="o">*</span><span class="n">frame_rate</span><span class="o">/</span><span class="n">n_samples</span>
@@ -452,9 +452,9 @@ plot_samples(fft[:2000])</span></code></pre></figure>
 
 <h2 id="trial-2">Trial 2</h2>
 
-<p>I figured perhaps the 16 qubit experiment is a bit too much, so I tried simplifying it to 5 qubits, with a very low sample size of \(2^5 = 32\) samples. With such a small number of samples, to get a decent frequency resolution, I had to drastically decrease the sampling rate to \(2000\), which gave a frequency resolution of</p>
+<p>I figured perhaps the 16 qubit experiment is a bit too much, so I tried simplifying it to 5 qubits, with a very low sample size of <script type="math/tex">2^5 = 32</script> samples. With such a small number of samples, to get a decent frequency resolution, I had to drastically decrease the sampling rate to <script type="math/tex">2000</script>, which gave a frequency resolution of</p>
 
-\[\delta f = \frac{sampling\_rate}{n\_samples} = \frac{2000}{32} = 62.5\]
+<script type="math/tex; mode=display">\delta f = \frac{sampling\_rate}{n\_samples} = \frac{2000}{32} = 62.5</script>
 
 <p>I first ran the experiment on the qasm_simulator to see how the desired output should look like:</p>
 
@@ -581,7 +581,7 @@ freqs = top_indices*frame_rate/n</span><span class="n">_samples</span>
 
 <h2 id="trial-4">Trial 4</h2>
 
-<p>Running the entire circuit, with a sampling rate of \(2000\), and only 3 qubits</p>
+<p>Running the entire circuit, with a sampling rate of <script type="math/tex">2000</script>, and only 3 qubits</p>
 
 <figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">n_qubits</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="n">n_samples</span> <span class="o">=</span> <span class="mi">2</span><span class="o">**</span><span class="n">n_qubits</span>
@@ -606,13 +606,13 @@ freqs = top_indices*frame_rate/n</span><span class="n">_samples</span>
 
 <p><img src="/assets/ibmq_8_histogram.png" alt="ibmq_8_histogram.png" /></p>
 
-<p>Nice! we see a clear peak. The peak seems to be at \(100\) which is \(4\). To get the associated frequency :</p>
+<p>Nice! we see a clear peak. The peak seems to be at <script type="math/tex">100</script> which is <script type="math/tex">4</script>. To get the associated frequency :</p>
 
-\[\delta f = \frac{2000}{8} = 250Hz\]
+<script type="math/tex; mode=display">\delta f = \frac{2000}{8} = 250Hz</script>
 
-\[F = 4 * \frac{sampling\_rate}{n\_samples} = 4 * \frac{2000}{8} \pm \delta f\]
+<script type="math/tex; mode=display">F = 4 * \frac{sampling\_rate}{n\_samples} = 4 * \frac{2000}{8} \pm \delta f</script>
 
-\[= 1000 \pm 250Hz\]
+<script type="math/tex; mode=display">= 1000 \pm 250Hz</script>
 
 <p>Nice!</p>
 
