@@ -16,10 +16,11 @@ All code can be found at this [repository][main_code]
 
 ## So What's Happening Exactly ?
 
-### TLDR; - I want to make a frequency detector using a quantum computer
-
 
 First things first - what am I trying here ? - basically I am trying to build a frequency detector on a quantum computer, audio file goes in and most dominant frequencies come out, thats it. (some might ask - aren't you making a glorified version of a quantum version of discrete fourier transform ? -> well yeh but sshhh!). I plan to start with simple audio signal of a pure sine wave. If things work out I may try to record a note played on a guitar.
+
+### TLDR; - I want to make a frequency detector using a quantum computer
+
 
 ## Why should I care ?
 Apart from having the potential to crack your facebook/instagram/bank account passwords, QFT or Fourier transform is one of the central tools in mathematics and is used almost in every piece of tech that you see around you in some way.
