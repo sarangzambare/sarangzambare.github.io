@@ -37,6 +37,7 @@ texture:
   date_format: "%b %-d, %Y"
   style: [black]
   showNav: false
+  disqus_shortname: sarangzambare-github-io
 
   social_links:
     twitter: sarangz

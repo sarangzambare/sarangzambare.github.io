@@ -650,6 +650,7 @@ There could be a lot of ways in which this work can be improved even with the cu
 6. ["Approximate Quantum Fourier Transform"][aqft]
 7. ["Quirk quantum circuit visualizer"][quirk]
 
+
 [bcg_quantum]: https://www.bcg.com/publications/2019/quantum-computers-create-value-when.aspx
 [nisq_era]: https://arxiv.org/abs/1801.00862
 [state-prep]: https://arxiv.org/abs/1003.5760
