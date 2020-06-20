@@ -19,12 +19,12 @@
 # in the templates via {{ site.myvariable }}.
 
 title: rock of truth in a sea of lies
-email: your-email@example.com
+email: thesarng@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
   website to post about cool tech and music related things
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://sarangzambare.github.io/" # the base hostname & protocol for your site, e.g. http://example.com
-twitter_username: ""
+twitter_username: "emergententity"
 github_username:  sarangzambare
 
 # Build settings
@@ -38,7 +38,7 @@ texture:
   disqus_shortname: sarangzambare-github-io
 
   social_links:
-    twitter: sarangz
+    twitter: emergententity
     github:  sarangzambare
     linkedIn: in/sarang-zambare # format: locale/username
 show_excerpts: true
